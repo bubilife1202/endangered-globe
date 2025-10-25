@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Living Red List Globe - 살아있는 멸종위기 지도</title>
+    <link rel="stylesheet" href="/src/styles/main.css">
+</head>
+<body>
+    <div id="app">
+        <!-- Header -->
+        <header class="header">
+            <h1>🌍 The Living Red List Globe</h1>
+            <p class="subtitle">살아있는 멸종위기 지도</p>
+        </header>
+
+        <!-- Main Canvas -->
+        <div id="globe-container"></div>
+
+        <!-- Info Panel -->
+        <div id="info-panel" class="info-panel hidden">
+            <button class="close-btn" id="close-panel">&times;</button>
+            <div class="info-content">
+                <div id="species-image" class="species-image"></div>
+                <h2 id="species-name">동물 이름</h2>
+                <p class="scientific-name" id="scientific-name">학명</p>
+                <div class="status-badge" id="status-badge">상태</div>
+
+                <div class="info-section">
+                    <h3>🚨 왜 위기인가요?</h3>
+                    <p id="threats">위협 요인 정보</p>
+                </div>
+
+                <div class="info-section">
+                    <h3>📍 어디에 사나요?</h3>
+                    <p id="habitat">서식지 정보</p>
+                </div>
+
+                <div class="info-section">
+                    <h3>📊 남은 개체 수</h3>
+                    <p id="population">개체 수 정보</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Legend -->
+        <div class="legend">
+            <h3>멸종 등급</h3>
+            <div class="legend-item">
+                <span class="legend-color" style="background: #000000;"></span>
+                <span>EX - 멸종</span>
+            </div>
+            <div class="legend-item">
+                <span class="legend-color" style="background: #4A4A4A;"></span>
+                <span>EW - 야생 멸종</span>
+            </div>
+            <div class="legend-item">
+                <span class="legend-color" style="background: #D32F2F;"></span>
+                <span>CR - 위급</span>
+            </div>
+            <div class="legend-item">
+                <span class="legend-color" style="background: #FF6F00;"></span>
+                <span>EN - 위기</span>
+            </div>
+            <div class="legend-item">
+                <span class="legend-color" style="background: #FBC02D;"></span>
+                <span>VU - 취약</span>
+            </div>
+        </div>
+
+        <!-- Timeline Controls -->
+        <div class="timeline-controls">
+            <h3>시간대 선택</h3>
+            <div class="timeline-slider">
+                <input type="range" id="year-slider" min="1900" max="2024" value="2024" step="1">
+                <div class="year-display">
+                    <span id="current-year">2024</span>년
+                </div>
+            </div>
+            <div class="timeline-info">
+                <span id="species-count">0</span> 종 표시 중
+            </div>
+        </div>
+
+        <!-- Filter Panel -->
+        <div class="filter-panel">
+            <h3>필터</h3>
+
+            <div class="filter-group">
+                <label>등급별 필터</label>
+                <div class="filter-options">
+                    <label><input type="checkbox" value="EX" checked> EX - 멸종</label>
+                    <label><input type="checkbox" value="EW" checked> EW - 야생 멸종</label>
+                    <label><input type="checkbox" value="CR" checked> CR - 위급</label>
+                    <label><input type="checkbox" value="EN" checked> EN - 위기</label>
+                    <label><input type="checkbox" value="VU" checked> VU - 취약</label>
+                </div>
+            </div>
+
+            <div class="filter-group">
+                <label>대륙별 필터</label>
+                <select id="continent-filter">
+                    <option value="all">전체</option>
+                    <option value="africa">아프리카</option>
+                    <option value="asia">아시아</option>
+                    <option value="europe">유럽</option>
+                    <option value="north-america">북미</option>
+                    <option value="south-america">남미</option>
+                    <option value="oceania">오세아니아</option>
+                    <option value="antarctica">남극</option>
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label>검색</label>
+                <input type="text" id="species-search" placeholder="동물 이름 검색...">
+            </div>
+        </div>
+
+        <!-- Loading Indicator -->
+        <div id="loading" class="loading">
+            <div class="spinner"></div>
+            <p>데이터를 불러오는 중...</p>
+        </div>
+    </div>
+
+    <script type="module" src="/src/main.js"></script>
+</body>
+</html>
