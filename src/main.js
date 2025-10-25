@@ -11,28 +11,39 @@ class App {
     }
 
     async init() {
-        // Initialize UI
-        this.ui = new UIController();
-        this.ui.showLoading();
+        try {
+            // Initialize UI
+            this.ui = new UIController();
+            this.ui.showLoading();
 
-        // Initialize data manager
-        this.dataManager = new DataManager();
-        await this.dataManager.initialize();
+            console.log('Initializing data manager...');
+            // Initialize data manager
+            this.dataManager = new DataManager();
+            await this.dataManager.initialize();
+            console.log(`Data loaded: ${this.dataManager.species.length} species`);
 
-        // Initialize globe
-        const container = document.getElementById('globe-container');
-        this.globe = new Globe(container);
+            console.log('Initializing 3D globe...');
+            // Initialize globe
+            const container = document.getElementById('globe-container');
+            this.globe = new Globe(container);
+            console.log('Globe created successfully');
 
-        // Set up event listeners
-        this.setupEventListeners();
+            // Set up event listeners
+            this.setupEventListeners();
 
-        // Initial render
-        this.updateVisualization();
+            console.log('Updating visualization...');
+            // Initial render
+            this.updateVisualization();
 
-        this.ui.hideLoading();
+            this.ui.hideLoading();
 
-        console.log('The Living Red List Globe initialized successfully!');
-        console.log(`Loaded ${this.dataManager.species.length} species`);
+            console.log('The Living Red List Globe initialized successfully!');
+            console.log(`Loaded ${this.dataManager.species.length} species`);
+        } catch (error) {
+            console.error('Error initializing app:', error);
+            this.ui.hideLoading();
+            this.ui.showError('초기화 중 오류가 발생했습니다: ' + error.message);
+        }
     }
 
     setupEventListeners() {
@@ -110,6 +121,9 @@ class App {
 
 // Initialize app when DOM is ready
 document.addEventListener('DOMContentLoaded', () => {
+    console.log('DOM loaded, starting app...');
     const app = new App();
-    app.init();
+    app.init().catch(error => {
+        console.error('Fatal error:', error);
+    });
 });

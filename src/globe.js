@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
 export class Globe {
     constructor(container) {
@@ -101,14 +101,28 @@ export class Globe {
         for (let i = -80; i <= 80; i += 20) {
             const lat = (i * Math.PI) / 180;
             const radius = Math.cos(lat) * 1.01;
-            const geometry = new THREE.CircleGeometry(radius, 64);
-            geometry.vertices.shift(); // Remove center vertex
+
+            // Create circle points
+            const points = [];
+            const segments = 64;
+            for (let j = 0; j <= segments; j++) {
+                const theta = (j / segments) * Math.PI * 2;
+                points.push(
+                    new THREE.Vector3(
+                        radius * Math.cos(theta),
+                        0,
+                        radius * Math.sin(theta)
+                    )
+                );
+            }
+
+            const geometry = new THREE.BufferGeometry().setFromPoints(points);
             const material = new THREE.LineBasicMaterial({
                 color: 0x4488ff,
                 transparent: true,
                 opacity: 0.3
             });
-            const line = new THREE.LineLoop(geometry, material);
+            const line = new THREE.Line(geometry, material);
             line.rotation.x = Math.PI / 2;
             line.position.y = Math.sin(lat) * 1.01;
             gridHelper.add(line);

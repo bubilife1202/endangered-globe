@@ -17,6 +17,7 @@ export class UIController {
         this.onSearch = null;
 
         this.initializeEventListeners();
+        this.updateStatusFilters(); // Initialize status filters
     }
 
     initializeEventListeners() {
