@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { CSS2DRenderer, CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js';
 
 export class Globe {
     constructor(container) {
@@ -7,11 +8,14 @@ export class Globe {
         this.scene = null;
         this.camera = null;
         this.renderer = null;
+        this.labelRenderer = null;
         this.controls = null;
         this.globe = null;
         this.markers = [];
+        this.labels = [];
         this.raycaster = new THREE.Raycaster();
         this.mouse = new THREE.Vector2();
+        this.isMobile = window.innerWidth < 768;
 
         this.init();
     }
@@ -27,31 +31,48 @@ export class Globe {
             0.1,
             1000
         );
-        this.camera.position.z = 3;
+        this.camera.position.z = this.isMobile ? 3.5 : 3;
 
-        // Renderer
+        // WebGL Renderer
         this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
         this.renderer.setSize(window.innerWidth, window.innerHeight);
         this.renderer.setPixelRatio(window.devicePixelRatio);
         this.container.appendChild(this.renderer.domElement);
 
+        // CSS2D Label Renderer
+        this.labelRenderer = new CSS2DRenderer();
+        this.labelRenderer.setSize(window.innerWidth, window.innerHeight);
+        this.labelRenderer.domElement.style.position = 'absolute';
+        this.labelRenderer.domElement.style.top = '0';
+        this.labelRenderer.domElement.style.left = '0';
+        this.labelRenderer.domElement.style.pointerEvents = 'none';
+        this.container.appendChild(this.labelRenderer.domElement);
+
         // Controls
         this.controls = new OrbitControls(this.camera, this.renderer.domElement);
         this.controls.enableDamping = true;
         this.controls.dampingFactor = 0.05;
-        this.controls.minDistance = 1.5;
-        this.controls.maxDistance = 5;
+        this.controls.minDistance = this.isMobile ? 2 : 1.5;
+        this.controls.maxDistance = this.isMobile ? 6 : 5;
         this.controls.enablePan = false;
+        this.controls.autoRotate = false;
+        this.controls.autoRotateSpeed = 0.5;
+
+        // Mobile touch optimization
+        if (this.isMobile) {
+            this.controls.rotateSpeed = 0.7;
+            this.controls.zoomSpeed = 0.8;
+        }
 
         // Lights
-        const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
         this.scene.add(ambientLight);
 
-        const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+        const directionalLight = new THREE.DirectionalLight(0xffffff, 0.6);
         directionalLight.position.set(5, 3, 5);
         this.scene.add(directionalLight);
 
-        // Create Globe
+        // Create Globe with continents
         this.createGlobe();
 
         // Create Stars
@@ -67,20 +88,35 @@ export class Globe {
     createGlobe() {
         const geometry = new THREE.SphereGeometry(1, 64, 64);
 
-        // Earth-like material
+        // Create earth texture with continents
+        const canvas = document.createElement('canvas');
+        canvas.width = 2048;
+        canvas.height = 1024;
+        const ctx = canvas.getContext('2d');
+
+        // Ocean color
+        ctx.fillStyle = '#1a4d7a';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        // Draw continents (simplified)
+        this.drawContinents(ctx, canvas.width, canvas.height);
+
+        const texture = new THREE.CanvasTexture(canvas);
+        texture.needsUpdate = true;
+
+        // Earth material with texture
         const material = new THREE.MeshPhongMaterial({
-            color: 0x2233ff,
-            emissive: 0x112244,
-            shininess: 5,
-            transparent: true,
-            opacity: 0.9
+            map: texture,
+            bumpScale: 0.01,
+            shininess: 10,
+            transparent: false
         });
 
         this.globe = new THREE.Mesh(geometry, material);
         this.scene.add(this.globe);
 
         // Add atmosphere glow
-        const glowGeometry = new THREE.SphereGeometry(1.05, 64, 64);
+        const glowGeometry = new THREE.SphereGeometry(1.02, 64, 64);
         const glowMaterial = new THREE.MeshBasicMaterial({
             color: 0x4488ff,
             transparent: true,
@@ -90,8 +126,71 @@ export class Globe {
         const glow = new THREE.Mesh(glowGeometry, glowMaterial);
         this.globe.add(glow);
 
-        // Add grid lines
+        // Add subtle grid lines
         this.addGridLines();
+    }
+
+    drawContinents(ctx, width, height) {
+        ctx.fillStyle = '#2d5a3d';
+        ctx.strokeStyle = '#3d6a4d';
+        ctx.lineWidth = 2;
+
+        // Simple continent shapes (rough approximations)
+        // Africa
+        this.drawContinent(ctx, width, height, [
+            { lat: 37, lng: 10 }, { lat: 30, lng: 30 }, { lat: 10, lng: 50 },
+            { lat: -35, lng: 30 }, { lat: -30, lng: 20 }, { lat: 10, lng: 10 }
+        ]);
+
+        // Europe
+        this.drawContinent(ctx, width, height, [
+            { lat: 70, lng: 10 }, { lat: 60, lng: 30 }, { lat: 45, lng: 40 },
+            { lat: 36, lng: 10 }, { lat: 45, lng: -10 }
+        ]);
+
+        // Asia
+        this.drawContinent(ctx, width, height, [
+            { lat: 70, lng: 60 }, { lat: 75, lng: 100 }, { lat: 60, lng: 140 },
+            { lat: 20, lng: 140 }, { lat: 0, lng: 100 }, { lat: 10, lng: 70 },
+            { lat: 40, lng: 50 }
+        ]);
+
+        // North America
+        this.drawContinent(ctx, width, height, [
+            { lat: 70, lng: -100 }, { lat: 75, lng: -80 }, { lat: 60, lng: -60 },
+            { lat: 25, lng: -80 }, { lat: 15, lng: -90 }, { lat: 30, lng: -120 },
+            { lat: 50, lng: -130 }
+        ]);
+
+        // South America
+        this.drawContinent(ctx, width, height, [
+            { lat: 10, lng: -80 }, { lat: 10, lng: -50 }, { lat: -30, lng: -40 },
+            { lat: -55, lng: -70 }, { lat: -20, lng: -80 }
+        ]);
+
+        // Australia
+        this.drawContinent(ctx, width, height, [
+            { lat: -10, lng: 130 }, { lat: -10, lng: 150 }, { lat: -40, lng: 150 },
+            { lat: -40, lng: 120 }
+        ]);
+    }
+
+    drawContinent(ctx, width, height, points) {
+        if (points.length < 3) return;
+
+        ctx.beginPath();
+        points.forEach((point, i) => {
+            const x = ((point.lng + 180) / 360) * width;
+            const y = ((90 - point.lat) / 180) * height;
+            if (i === 0) {
+                ctx.moveTo(x, y);
+            } else {
+                ctx.lineTo(x, y);
+            }
+        });
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
     }
 
     addGridLines() {
@@ -100,9 +199,8 @@ export class Globe {
         // Latitude lines
         for (let i = -80; i <= 80; i += 20) {
             const lat = (i * Math.PI) / 180;
-            const radius = Math.cos(lat) * 1.01;
+            const radius = Math.cos(lat) * 1.005;
 
-            // Create circle points
             const points = [];
             const segments = 64;
             for (let j = 0; j <= segments; j++) {
@@ -120,11 +218,11 @@ export class Globe {
             const material = new THREE.LineBasicMaterial({
                 color: 0x4488ff,
                 transparent: true,
-                opacity: 0.3
+                opacity: 0.15
             });
             const line = new THREE.Line(geometry, material);
             line.rotation.x = Math.PI / 2;
-            line.position.y = Math.sin(lat) * 1.01;
+            line.position.y = Math.sin(lat) * 1.005;
             gridHelper.add(line);
         }
 
@@ -132,7 +230,7 @@ export class Globe {
         for (let i = 0; i < 12; i++) {
             const curve = new THREE.EllipseCurve(
                 0, 0,
-                1.01, 1.01,
+                1.005, 1.005,
                 0, 2 * Math.PI,
                 false,
                 0
@@ -142,7 +240,7 @@ export class Globe {
             const material = new THREE.LineBasicMaterial({
                 color: 0x4488ff,
                 transparent: true,
-                opacity: 0.3
+                opacity: 0.15
             });
             const line = new THREE.Line(geometry, material);
             line.rotation.y = (i * Math.PI) / 6;
@@ -179,18 +277,19 @@ export class Globe {
     }
 
     addSpeciesMarker(species) {
-        const { lat, lng, status } = species;
+        const { lat, lng, status, commonName, emoji } = species;
 
         // Convert lat/lng to 3D coordinates
         const phi = (90 - lat) * (Math.PI / 180);
         const theta = (lng + 180) * (Math.PI / 180);
 
-        const x = -1.02 * Math.sin(phi) * Math.cos(theta);
-        const y = 1.02 * Math.cos(phi);
-        const z = 1.02 * Math.sin(phi) * Math.sin(theta);
+        const markerRadius = 1.02;
+        const x = -markerRadius * Math.sin(phi) * Math.cos(theta);
+        const y = markerRadius * Math.cos(phi);
+        const z = markerRadius * Math.sin(phi) * Math.sin(theta);
 
         // Create marker
-        const geometry = new THREE.SphereGeometry(0.015, 16, 16);
+        const geometry = new THREE.SphereGeometry(this.isMobile ? 0.02 : 0.015, 16, 16);
         const material = new THREE.MeshBasicMaterial({
             color: this.getColorByStatus(status),
             transparent: true,
@@ -199,17 +298,52 @@ export class Globe {
 
         const marker = new THREE.Mesh(geometry, material);
         marker.position.set(x, y, z);
-        marker.userData = species; // Store species data
+        marker.userData = species;
 
         this.globe.add(marker);
         this.markers.push(marker);
 
         // Add pulsing animation
         this.animateMarker(marker);
+
+        // Add label (text)
+        this.addLabel(species, x, y, z);
+    }
+
+    addLabel(species, x, y, z) {
+        const { commonName, emoji, status } = species;
+
+        // Create label element
+        const labelDiv = document.createElement('div');
+        labelDiv.className = 'species-label';
+
+        // Show emoji on mobile, name on desktop
+        const displayText = this.isMobile ? emoji : `${emoji} ${commonName}`;
+        labelDiv.textContent = displayText;
+
+        // Color based on status
+        labelDiv.style.color = this.getStatusColorHex(status);
+        labelDiv.style.fontSize = this.isMobile ? '12px' : '11px';
+        labelDiv.style.padding = this.isMobile ? '3px 6px' : '2px 5px';
+
+        const label = new CSS2DObject(labelDiv);
+
+        // Position label slightly above marker
+        const labelRadius = 1.08;
+        const phi = Math.acos(y / 1.02);
+        const theta = Math.atan2(z, -x);
+
+        label.position.set(
+            -labelRadius * Math.sin(phi) * Math.cos(theta),
+            labelRadius * Math.cos(phi),
+            labelRadius * Math.sin(phi) * Math.sin(theta)
+        );
+
+        this.globe.add(label);
+        this.labels.push(label);
     }
 
     animateMarker(marker) {
-        const originalScale = marker.scale.clone();
         let time = Math.random() * Math.PI * 2;
 
         const animate = () => {
@@ -235,6 +369,19 @@ export class Globe {
         return colors[status] || 0xFFFFFF;
     }
 
+    getStatusColorHex(status) {
+        const colors = {
+            'EX': '#000000',
+            'EW': '#9E9E9E',
+            'CR': '#D32F2F',
+            'EN': '#FF6F00',
+            'VU': '#FBC02D',
+            'NT': '#66BB6A',
+            'LC': '#4CAF50'
+        };
+        return colors[status] || '#FFFFFF';
+    }
+
     clearMarkers() {
         this.markers.forEach(marker => {
             this.globe.remove(marker);
@@ -242,6 +389,11 @@ export class Globe {
             marker.material.dispose();
         });
         this.markers = [];
+
+        this.labels.forEach(label => {
+            this.globe.remove(label);
+        });
+        this.labels = [];
     }
 
     onMouseClick(event, callback) {
@@ -262,9 +414,22 @@ export class Globe {
     }
 
     onWindowResize() {
+        this.isMobile = window.innerWidth < 768;
+
         this.camera.aspect = window.innerWidth / window.innerHeight;
         this.camera.updateProjectionMatrix();
+
         this.renderer.setSize(window.innerWidth, window.innerHeight);
+        this.labelRenderer.setSize(window.innerWidth, window.innerHeight);
+
+        // Adjust camera distance for mobile
+        if (this.isMobile) {
+            this.controls.minDistance = 2;
+            this.controls.maxDistance = 6;
+        } else {
+            this.controls.minDistance = 1.5;
+            this.controls.maxDistance = 5;
+        }
     }
 
     animate() {
@@ -275,5 +440,6 @@ export class Globe {
 
         this.controls.update();
         this.renderer.render(this.scene, this.camera);
+        this.labelRenderer.render(this.scene, this.camera);
     }
 }

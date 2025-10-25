@@ -45,6 +45,24 @@ body {
 #globe-container {
     width: 100%;
     height: 100%;
+    position: relative;
+}
+
+/* Species Labels (CSS2D) */
+.species-label {
+    background: rgba(0, 0, 0, 0.85);
+    padding: 2px 5px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 500;
+    white-space: nowrap;
+    pointer-events: none;
+    user-select: none;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(5px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    transition: all 0.2s ease;
 }
 
 /* Info Panel */
@@ -309,20 +327,203 @@ body {
 
 /* Responsive */
 @media (max-width: 768px) {
-    .header h1 {
-        font-size: 1.5rem;
+    /* Header */
+    .header {
+        top: 10px;
+        padding: 10px 20px;
     }
 
+    .header h1 {
+        font-size: 1.3rem;
+        margin-bottom: 3px;
+    }
+
+    .subtitle {
+        font-size: 0.75rem;
+    }
+
+    /* Info Panel - Full width on mobile */
     .info-panel {
-        width: calc(100% - 40px);
-        right: 20px;
+        top: auto;
+        right: auto;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        max-height: 60vh;
+        border-radius: 15px 15px 0 0;
+        transform: none;
+    }
+
+    .info-panel.hidden {
+        bottom: -100%;
+        right: auto;
+        opacity: 1;
+    }
+
+    /* Legend - Smaller on mobile */
+    .legend {
+        bottom: 120px;
+        left: 10px;
+        padding: 10px;
+        font-size: 0.85rem;
+    }
+
+    .legend h3 {
+        font-size: 0.9rem;
+        margin-bottom: 8px;
+    }
+
+    .legend-item {
+        margin-bottom: 5px;
+        font-size: 0.75rem;
+    }
+
+    .legend-color {
+        width: 15px;
+        height: 15px;
+        margin-right: 8px;
+    }
+
+    /* Timeline Controls */
+    .timeline-controls {
+        bottom: 15px;
+        width: calc(100% - 20px);
+        padding: 12px;
+    }
+
+    .timeline-controls h3 {
+        font-size: 0.9rem;
+        margin-bottom: 10px;
+    }
+
+    .year-display {
+        font-size: 1.2rem;
+    }
+
+    .timeline-info {
+        font-size: 0.8rem;
+    }
+
+    /* Filter Panel - Collapsible on mobile */
+    .filter-panel {
+        top: 90px;
+        left: 10px;
+        width: calc(100% - 20px);
+        max-width: 250px;
+        max-height: calc(100vh - 450px);
+        font-size: 0.85rem;
+    }
+
+    .filter-panel h3 {
+        font-size: 0.9rem;
+        margin-bottom: 10px;
+    }
+
+    .filter-group {
+        margin-bottom: 15px;
+    }
+
+    .filter-group label {
+        font-size: 0.85rem;
+    }
+
+    /* Species Labels - Emoji only on mobile */
+    .species-label {
+        font-size: 12px;
+        padding: 3px 6px;
+    }
+
+    /* Touch-friendly inputs */
+    input[type="range"],
+    input[type="checkbox"],
+    select,
+    input[type="text"] {
+        min-height: 44px;
+        min-width: 44px;
+    }
+
+    input[type="checkbox"] {
+        width: 20px;
+        height: 20px;
+    }
+}
+
+/* Very small devices */
+@media (max-width: 480px) {
+    .header h1 {
+        font-size: 1.1rem;
+    }
+
+    .subtitle {
+        font-size: 0.7rem;
     }
 
     .filter-panel {
-        width: 200px;
+        max-width: 200px;
+    }
+
+    .legend {
+        display: none; /* Hide legend on very small screens */
     }
 
     .timeline-controls {
-        width: calc(100% - 40px);
+        padding: 10px;
+    }
+
+    .year-display {
+        font-size: 1rem;
+    }
+}
+
+/* Landscape mobile */
+@media (max-width: 768px) and (orientation: landscape) {
+    .header {
+        top: 5px;
+        padding: 5px 15px;
+    }
+
+    .header h1 {
+        font-size: 1rem;
+    }
+
+    .subtitle {
+        display: none;
+    }
+
+    .filter-panel {
+        top: 60px;
+        max-height: calc(100vh - 200px);
+    }
+
+    .legend {
+        bottom: 80px;
+    }
+
+    .timeline-controls {
+        bottom: 10px;
+        padding: 8px;
+    }
+
+    .info-panel {
+        max-height: 50vh;
+    }
+}
+
+/* Touch device optimizations */
+@media (hover: none) and (pointer: coarse) {
+    /* Larger touch targets */
+    .close-btn {
+        font-size: 2.5rem;
+        padding: 10px;
+    }
+
+    input[type="range"] {
+        height: 8px;
+    }
+
+    /* Prevent text selection on touch */
+    * {
+        -webkit-tap-highlight-color: transparent;
+        -webkit-touch-callout: none;
     }
 }
