@@ -86,97 +86,349 @@ export class Globe {
     }
 
     createGlobe() {
-        const geometry = new THREE.SphereGeometry(1, 64, 64);
+        const geometry = new THREE.SphereGeometry(1, 128, 128);
 
-        // Create earth texture with continents
+        // Create beautiful earth texture with continents
         const canvas = document.createElement('canvas');
-        canvas.width = 2048;
-        canvas.height = 1024;
+        canvas.width = 4096;  // Higher resolution for better quality
+        canvas.height = 2048;
         const ctx = canvas.getContext('2d');
 
-        // Ocean color
-        ctx.fillStyle = '#1a4d7a';
+        // Ocean with gradient (deep to shallow water)
+        const oceanGradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+        oceanGradient.addColorStop(0, '#0a2e4a');    // Arctic - dark blue
+        oceanGradient.addColorStop(0.25, '#1a5f8a'); // North - medium blue
+        oceanGradient.addColorStop(0.5, '#2680b8');  // Equator - bright blue
+        oceanGradient.addColorStop(0.75, '#1a5f8a'); // South - medium blue
+        oceanGradient.addColorStop(1, '#0a2e4a');    // Antarctic - dark blue
+        ctx.fillStyle = oceanGradient;
         ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-        // Draw continents (simplified)
+        // Add ocean depth variation (noise)
+        this.addOceanTexture(ctx, canvas.width, canvas.height);
+
+        // Draw continents with better colors and details
         this.drawContinents(ctx, canvas.width, canvas.height);
+
+        // Add clouds layer
+        this.addClouds(ctx, canvas.width, canvas.height);
 
         const texture = new THREE.CanvasTexture(canvas);
         texture.needsUpdate = true;
 
-        // Earth material with texture
+        // Create bump map for 3D relief
+        const bumpCanvas = this.createBumpMap(canvas.width, canvas.height);
+        const bumpTexture = new THREE.CanvasTexture(bumpCanvas);
+        bumpTexture.needsUpdate = true;
+
+        // Earth material with enhanced textures
         const material = new THREE.MeshPhongMaterial({
             map: texture,
-            bumpScale: 0.01,
-            shininess: 10,
+            bumpMap: bumpTexture,
+            bumpScale: 0.005,
+            shininess: 15,
+            specular: 0x222222,
             transparent: false
         });
 
         this.globe = new THREE.Mesh(geometry, material);
         this.scene.add(this.globe);
 
-        // Add atmosphere glow
-        const glowGeometry = new THREE.SphereGeometry(1.02, 64, 64);
-        const glowMaterial = new THREE.MeshBasicMaterial({
-            color: 0x4488ff,
-            transparent: true,
-            opacity: 0.15,
-            side: THREE.BackSide
-        });
-        const glow = new THREE.Mesh(glowGeometry, glowMaterial);
-        this.globe.add(glow);
+        // Add beautiful atmosphere glow (multiple layers)
+        this.addAtmosphere();
 
         // Add subtle grid lines
         this.addGridLines();
     }
 
-    drawContinents(ctx, width, height) {
-        ctx.fillStyle = '#2d5a3d';
-        ctx.strokeStyle = '#3d6a4d';
-        ctx.lineWidth = 2;
-
-        // Simple continent shapes (rough approximations)
-        // Africa
-        this.drawContinent(ctx, width, height, [
-            { lat: 37, lng: 10 }, { lat: 30, lng: 30 }, { lat: 10, lng: 50 },
-            { lat: -35, lng: 30 }, { lat: -30, lng: 20 }, { lat: 10, lng: 10 }
-        ]);
-
-        // Europe
-        this.drawContinent(ctx, width, height, [
-            { lat: 70, lng: 10 }, { lat: 60, lng: 30 }, { lat: 45, lng: 40 },
-            { lat: 36, lng: 10 }, { lat: 45, lng: -10 }
-        ]);
-
-        // Asia
-        this.drawContinent(ctx, width, height, [
-            { lat: 70, lng: 60 }, { lat: 75, lng: 100 }, { lat: 60, lng: 140 },
-            { lat: 20, lng: 140 }, { lat: 0, lng: 100 }, { lat: 10, lng: 70 },
-            { lat: 40, lng: 50 }
-        ]);
-
-        // North America
-        this.drawContinent(ctx, width, height, [
-            { lat: 70, lng: -100 }, { lat: 75, lng: -80 }, { lat: 60, lng: -60 },
-            { lat: 25, lng: -80 }, { lat: 15, lng: -90 }, { lat: 30, lng: -120 },
-            { lat: 50, lng: -130 }
-        ]);
-
-        // South America
-        this.drawContinent(ctx, width, height, [
-            { lat: 10, lng: -80 }, { lat: 10, lng: -50 }, { lat: -30, lng: -40 },
-            { lat: -55, lng: -70 }, { lat: -20, lng: -80 }
-        ]);
-
-        // Australia
-        this.drawContinent(ctx, width, height, [
-            { lat: -10, lng: 130 }, { lat: -10, lng: 150 }, { lat: -40, lng: 150 },
-            { lat: -40, lng: 120 }
-        ]);
+    addOceanTexture(ctx, width, height) {
+        // Add subtle ocean texture for realism
+        ctx.globalAlpha = 0.1;
+        for (let i = 0; i < 5000; i++) {
+            const x = Math.random() * width;
+            const y = Math.random() * height;
+            const size = Math.random() * 3;
+            ctx.fillStyle = Math.random() > 0.5 ? '#1a4d7a' : '#0d3a5a';
+            ctx.fillRect(x, y, size, size);
+        }
+        ctx.globalAlpha = 1.0;
     }
 
-    drawContinent(ctx, width, height, points) {
+    addClouds(ctx, width, height) {
+        // Add realistic cloud layer
+        ctx.globalAlpha = 0.3;
+        ctx.fillStyle = '#ffffff';
+
+        // Cloud patches
+        const cloudCount = 150;
+        for (let i = 0; i < cloudCount; i++) {
+            const x = Math.random() * width;
+            const y = Math.random() * height * 0.6 + height * 0.2; // Avoid poles
+            const size = Math.random() * 100 + 50;
+
+            const cloudGradient = ctx.createRadialGradient(x, y, 0, x, y, size);
+            cloudGradient.addColorStop(0, 'rgba(255, 255, 255, 0.6)');
+            cloudGradient.addColorStop(0.5, 'rgba(255, 255, 255, 0.3)');
+            cloudGradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
+
+            ctx.fillStyle = cloudGradient;
+            ctx.fillRect(x - size, y - size/2, size * 2, size);
+        }
+        ctx.globalAlpha = 1.0;
+    }
+
+    createBumpMap(width, height) {
+        const bumpCanvas = document.createElement('canvas');
+        bumpCanvas.width = width;
+        bumpCanvas.height = height;
+        const ctx = bumpCanvas.getContext('2d');
+
+        // Base dark color
+        ctx.fillStyle = '#000000';
+        ctx.fillRect(0, 0, width, height);
+
+        // Mountains and terrain (lighter areas = higher elevation)
+        ctx.fillStyle = '#666666';
+
+        // Add some mountain ranges (simplified)
+        const mountainRanges = [
+            { lat: 28, lng: 85, size: 30 },   // Himalayas
+            { lat: 46, lng: -110, size: 25 }, // Rockies
+            { lat: -15, lng: -70, size: 20 }, // Andes
+        ];
+
+        mountainRanges.forEach(range => {
+            const x = ((range.lng + 180) / 360) * width;
+            const y = ((90 - range.lat) / 180) * height;
+            const gradient = ctx.createRadialGradient(x, y, 0, x, y, range.size);
+            gradient.addColorStop(0, '#aaaaaa');
+            gradient.addColorStop(1, '#000000');
+            ctx.fillStyle = gradient;
+            ctx.fillRect(x - range.size, y - range.size, range.size * 2, range.size * 2);
+        });
+
+        return bumpCanvas;
+    }
+
+    addAtmosphere() {
+        // Multi-layer atmosphere for better effect
+        // Inner glow (thin atmosphere)
+        const glow1Geometry = new THREE.SphereGeometry(1.015, 64, 64);
+        const glow1Material = new THREE.MeshBasicMaterial({
+            color: 0x88ccff,
+            transparent: true,
+            opacity: 0.1,
+            side: THREE.BackSide
+        });
+        const glow1 = new THREE.Mesh(glow1Geometry, glow1Material);
+        this.globe.add(glow1);
+
+        // Outer glow (thick atmosphere)
+        const glow2Geometry = new THREE.SphereGeometry(1.03, 64, 64);
+        const glow2Material = new THREE.MeshBasicMaterial({
+            color: 0x6699ff,
+            transparent: true,
+            opacity: 0.08,
+            side: THREE.BackSide
+        });
+        const glow2 = new THREE.Mesh(glow2Geometry, glow2Material);
+        this.globe.add(glow2);
+
+        // Far atmosphere (atmospheric scattering effect)
+        const glow3Geometry = new THREE.SphereGeometry(1.05, 64, 64);
+        const glow3Material = new THREE.MeshBasicMaterial({
+            color: 0x4488ff,
+            transparent: true,
+            opacity: 0.05,
+            side: THREE.BackSide
+        });
+        const glow3 = new THREE.Mesh(glow3Geometry, glow3Material);
+        this.globe.add(glow3);
+    }
+
+    drawContinents(ctx, width, height) {
+        // Draw continents with different shades for variety
+        const continents = [
+            // Africa - detailed shape
+            {
+                color: '#3a7d44',
+                border: '#2d6336',
+                points: [
+                    { lat: 37, lng: 10 }, { lat: 35, lng: 15 }, { lat: 32, lng: 22 },
+                    { lat: 30, lng: 32 }, { lat: 15, lng: 43 }, { lat: 12, lng: 51 },
+                    { lat: -5, lng: 42 }, { lat: -12, lng: 40 }, { lat: -26, lng: 32 },
+                    { lat: -34, lng: 28 }, { lat: -34, lng: 20 }, { lat: -28, lng: 16 },
+                    { lat: -18, lng: 12 }, { lat: -5, lng: 13 }, { lat: 5, lng: 9 },
+                    { lat: 15, lng: 8 }, { lat: 25, lng: 8 }, { lat: 32, lng: 6 }
+                ]
+            },
+            // Europe - detailed
+            {
+                color: '#4a8d54',
+                border: '#3d7345',
+                points: [
+                    { lat: 71, lng: 25 }, { lat: 70, lng: 30 }, { lat: 60, lng: 30 },
+                    { lat: 55, lng: 37 }, { lat: 45, lng: 40 }, { lat: 42, lng: 44 },
+                    { lat: 40, lng: 29 }, { lat: 36, lng: 25 }, { lat: 36, lng: 12 },
+                    { lat: 40, lng: 8 }, { lat: 43, lng: 3 }, { lat: 48, lng: -5 },
+                    { lat: 51, lng: -5 }, { lat: 58, lng: 0 }, { lat: 60, lng: 5 },
+                    { lat: 65, lng: 10 }, { lat: 70, lng: 15 }
+                ]
+            },
+            // Asia - large and detailed
+            {
+                color: '#3d7d47',
+                border: '#2f6338',
+                points: [
+                    { lat: 75, lng: 60 }, { lat: 78, lng: 90 }, { lat: 73, lng: 125 },
+                    { lat: 65, lng: 145 }, { lat: 60, lng: 150 }, { lat: 50, lng: 142 },
+                    { lat: 42, lng: 130 }, { lat: 35, lng: 125 }, { lat: 24, lng: 122 },
+                    { lat: 20, lng: 110 }, { lat: 10, lng: 105 }, { lat: 1, lng: 103 },
+                    { lat: -8, lng: 115 }, { lat: -10, lng: 120 }, { lat: -8, lng: 125 },
+                    { lat: 0, lng: 100 }, { lat: 8, lng: 95 }, { lat: 22, lng: 88 },
+                    { lat: 28, lng: 85 }, { lat: 32, lng: 75 }, { lat: 25, lng: 68 },
+                    { lat: 25, lng: 60 }, { lat: 40, lng: 50 }, { lat: 50, lng: 55 },
+                    { lat: 65, lng: 60 }
+                ]
+            },
+            // North America
+            {
+                color: '#4d905d',
+                border: '#3e7349',
+                points: [
+                    { lat: 72, lng: -95 }, { lat: 75, lng: -85 }, { lat: 72, lng: -70 },
+                    { lat: 60, lng: -65 }, { lat: 50, lng: -55 }, { lat: 45, lng: -60 },
+                    { lat: 42, lng: -70 }, { lat: 35, lng: -75 }, { lat: 28, lng: -80 },
+                    { lat: 25, lng: -82 }, { lat: 20, lng: -85 }, { lat: 15, lng: -88 },
+                    { lat: 14, lng: -92 }, { lat: 18, lng: -95 }, { lat: 25, lng: -100 },
+                    { lat: 32, lng: -110 }, { lat: 38, lng: -120 }, { lat: 48, lng: -125 },
+                    { lat: 55, lng: -130 }, { lat: 60, lng: -135 }, { lat: 65, lng: -140 },
+                    { lat: 70, lng: -130 }, { lat: 72, lng: -110 }
+                ]
+            },
+            // South America
+            {
+                color: '#43865a',
+                border: '#356b47',
+                points: [
+                    { lat: 12, lng: -72 }, { lat: 10, lng: -65 }, { lat: 5, lng: -60 },
+                    { lat: -5, lng: -55 }, { lat: -10, lng: -50 }, { lat: -20, lng: -43 },
+                    { lat: -30, lng: -48 }, { lat: -40, lng: -62 }, { lat: -50, lng: -70 },
+                    { lat: -55, lng: -68 }, { lat: -50, lng: -73 }, { lat: -40, lng: -73 },
+                    { lat: -30, lng: -71 }, { lat: -20, lng: -70 }, { lat: -10, lng: -75 },
+                    { lat: -5, lng: -78 }, { lat: 0, lng: -79 }, { lat: 5, lng: -77 },
+                    { lat: 10, lng: -75 }
+                ]
+            },
+            // Australia
+            {
+                color: '#5a9d6a',
+                border: '#4a8358',
+                points: [
+                    { lat: -10, lng: 130 }, { lat: -12, lng: 135 }, { lat: -15, lng: 138 },
+                    { lat: -20, lng: 142 }, { lat: -25, lng: 145 }, { lat: -30, lng: 148 },
+                    { lat: -35, lng: 150 }, { lat: -38, lng: 148 }, { lat: -37, lng: 145 },
+                    { lat: -35, lng: 138 }, { lat: -33, lng: 135 }, { lat: -30, lng: 130 },
+                    { lat: -28, lng: 125 }, { lat: -25, lng: 120 }, { lat: -22, lng: 115 },
+                    { lat: -18, lng: 122 }, { lat: -14, lng: 128 }
+                ]
+            },
+            // Greenland
+            {
+                color: '#e8f5e8',  // Ice/snow color
+                border: '#c0d8c0',
+                points: [
+                    { lat: 83, lng: -35 }, { lat: 80, lng: -20 }, { lat: 76, lng: -18 },
+                    { lat: 70, lng: -22 }, { lat: 65, lng: -35 }, { lat: 60, lng: -45 },
+                    { lat: 65, lng: -50 }, { lat: 70, lng: -52 }, { lat: 75, lng: -55 },
+                    { lat: 80, lng: -50 }, { lat: 82, lng: -42 }
+                ]
+            },
+            // Antarctica (partial)
+            {
+                color: '#f0f8ff',  // Ice
+                border: '#d0e0f0',
+                points: [
+                    { lat: -60, lng: -180 }, { lat: -65, lng: -90 }, { lat: -70, lng: 0 },
+                    { lat: -65, lng: 90 }, { lat: -60, lng: 180 }, { lat: -85, lng: 0 }
+                ]
+            }
+        ];
+
+        // Draw each continent with its own color
+        continents.forEach(continent => {
+            this.drawContinent(ctx, width, height, continent.points, continent.color, continent.border);
+        });
+
+        // Add country borders for major countries
+        this.drawCountryBorders(ctx, width, height);
+    }
+
+    drawCountryBorders(ctx, width, height) {
+        ctx.strokeStyle = 'rgba(100, 120, 100, 0.4)';
+        ctx.lineWidth = 1;
+        ctx.setLineDash([3, 3]);
+
+        const countries = [
+            // USA
+            [
+                { lat: 49, lng: -125 }, { lat: 49, lng: -95 }, { lat: 49, lng: -67 },
+                { lat: 45, lng: -67 }, { lat: 40, lng: -74 }, { lat: 32, lng: -117 }
+            ],
+            // Canada (simplified)
+            [
+                { lat: 60, lng: -140 }, { lat: 60, lng: -95 }, { lat: 50, lng: -95 },
+                { lat: 49, lng: -95 }
+            ],
+            // Brazil
+            [
+                { lat: 5, lng: -60 }, { lat: -5, lng: -70 }, { lat: -15, lng: -55 },
+                { lat: -20, lng: -45 }, { lat: -30, lng: -50 }
+            ],
+            // Russia
+            [
+                { lat: 70, lng: 60 }, { lat: 70, lng: 100 }, { lat: 65, lng: 140 },
+                { lat: 50, lng: 142 }
+            ],
+            // China
+            [
+                { lat: 45, lng: 85 }, { lat: 42, lng: 125 }, { lat: 30, lng: 120 },
+                { lat: 22, lng: 110 }, { lat: 25, lng: 100 }
+            ],
+            // India
+            [
+                { lat: 30, lng: 75 }, { lat: 25, lng: 85 }, { lat: 15, lng: 78 },
+                { lat: 8, lng: 77 }
+            ],
+            // Australia (states)
+            [
+                { lat: -28, lng: 138 }, { lat: -28, lng: 141 }, { lat: -35, lng: 141 }
+            ]
+        ];
+
+        countries.forEach(country => {
+            ctx.beginPath();
+            country.forEach((point, i) => {
+                const x = ((point.lng + 180) / 360) * width;
+                const y = ((90 - point.lat) / 180) * height;
+                if (i === 0) {
+                    ctx.moveTo(x, y);
+                } else {
+                    ctx.lineTo(x, y);
+                }
+            });
+            ctx.stroke();
+        });
+
+        ctx.setLineDash([]);
+    }
+
+    drawContinent(ctx, width, height, points, fillColor = '#2d5a3d', strokeColor = '#3d6a4d') {
         if (points.length < 3) return;
+
+        ctx.fillStyle = fillColor;
+        ctx.strokeStyle = strokeColor;
+        ctx.lineWidth = 2;
 
         ctx.beginPath();
         points.forEach((point, i) => {
@@ -191,6 +443,15 @@ export class Globe {
         ctx.closePath();
         ctx.fill();
         ctx.stroke();
+
+        // Add texture/shading for depth
+        ctx.globalAlpha = 0.15;
+        const gradient = ctx.createLinearGradient(0, 0, width, height);
+        gradient.addColorStop(0, '#000000');
+        gradient.addColorStop(1, '#ffffff');
+        ctx.fillStyle = gradient;
+        ctx.fill();
+        ctx.globalAlpha = 1.0;
     }
 
     addGridLines() {
