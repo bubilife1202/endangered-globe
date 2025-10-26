@@ -681,7 +681,226 @@ body {
     background: rgba(255, 255, 255, 0.3);
 }
 
-/* ===== MOBILE RESPONSIVE ===== */
+/* ===== RESPONSIVE DESIGN ===== */
+
+/* Extra Large Screens (1920px and above) */
+@media (min-width: 1920px) {
+    .header {
+        padding: 20px 40px;
+        border-radius: 12px;
+    }
+
+    .header h1 {
+        font-size: 2.5rem;
+    }
+
+    .subtitle {
+        font-size: 1.1rem;
+    }
+
+    .version-badge {
+        font-size: 0.85rem;
+        padding: 6px 14px;
+    }
+
+    .language-toggle {
+        padding: 6px 12px;
+    }
+
+    .lang-option {
+        font-size: 0.85rem;
+        padding: 6px 10px;
+    }
+
+    .info-panel {
+        width: 450px;
+        padding: 35px;
+        font-size: 1.05rem;
+    }
+
+    .info-panel h2 {
+        font-size: 2rem;
+    }
+
+    .info-section h3 {
+        font-size: 1.3rem;
+    }
+
+    .link-button {
+        padding: 16px 20px;
+        font-size: 1.05rem;
+    }
+
+    .link-icon {
+        font-size: 1.5rem;
+    }
+
+    .legend {
+        bottom: 180px;
+        left: 40px;
+        font-size: 1rem;
+    }
+
+    .legend-toggle {
+        padding: 15px 20px;
+        font-size: 1.05rem;
+    }
+
+    .legend-title-main {
+        font-size: 1.05rem;
+    }
+
+    .legend-title-sub {
+        font-size: 0.8rem;
+    }
+
+    .legend-item {
+        font-size: 0.95rem;
+        margin-bottom: 10px;
+    }
+
+    .legend-color {
+        width: 24px;
+        height: 24px;
+    }
+
+    .timeline-controls {
+        width: 600px;
+        padding: 20px 25px;
+        border-radius: 12px;
+    }
+
+    .timeline-label {
+        font-size: 1.1rem;
+    }
+
+    .year-display {
+        font-size: 1.8rem;
+    }
+
+    .filter-panel {
+        width: 380px;
+        padding: 30px 25px;
+        font-size: 1rem;
+    }
+
+    .filter-header h3 {
+        font-size: 1.4rem;
+    }
+
+    .species-label {
+        font-size: 13px;
+        padding: 4px 8px;
+    }
+
+    .geo-label {
+        font-size: 1.1em;
+    }
+}
+
+/* Large Screens (1440px - 1920px) */
+@media (min-width: 1440px) and (max-width: 1919px) {
+    .header h1 {
+        font-size: 2.2rem;
+    }
+
+    .subtitle {
+        font-size: 1rem;
+    }
+
+    .info-panel {
+        width: 420px;
+        padding: 32px;
+    }
+
+    .legend {
+        bottom: 170px;
+        left: 35px;
+    }
+
+    .timeline-controls {
+        width: 580px;
+        padding: 18px 22px;
+    }
+
+    .filter-panel {
+        width: 360px;
+    }
+}
+
+/* Medium Screens (1024px - 1440px) */
+@media (min-width: 1024px) and (max-width: 1439px) {
+    .header h1 {
+        font-size: 1.8rem;
+    }
+
+    .info-panel {
+        width: 380px;
+        padding: 28px;
+    }
+
+    .legend {
+        bottom: 160px;
+    }
+
+    .timeline-controls {
+        width: 520px;
+    }
+
+    .filter-panel {
+        width: 340px;
+    }
+}
+
+/* Tablets (768px - 1024px) */
+@media (min-width: 768px) and (max-width: 1023px) {
+    .header {
+        padding: 12px 25px;
+    }
+
+    .header h1 {
+        font-size: 1.5rem;
+    }
+
+    .subtitle {
+        font-size: 0.85rem;
+    }
+
+    .info-panel {
+        width: 350px;
+        padding: 25px;
+        right: 20px;
+        top: 80px;
+    }
+
+    .legend {
+        bottom: 140px;
+        left: 20px;
+    }
+
+    .timeline-controls {
+        width: 450px;
+        bottom: 20px;
+    }
+
+    .filter-panel {
+        width: 320px;
+        padding: 25px 20px;
+    }
+
+    /* Keep menu toggle hidden on tablets */
+    .menu-toggle {
+        display: none;
+    }
+
+    .filter-panel {
+        position: absolute;
+        left: 20px;
+        top: 20px;
+        height: auto;
+        max-height: calc(100vh - 200px);
+    }
+}
 
 /* Tablets and Mobile (768px and below) */
 @media (max-width: 768px) {
@@ -736,10 +955,12 @@ body {
         bottom: 0;
         left: 0;
         width: 100%;
-        max-height: 75vh;
+        max-height: 80vh;
         border-radius: 20px 20px 0 0;
         transform: none;
-        padding: 25px 20px 20px;
+        padding: 30px 20px 30px;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
     }
 
     .info-panel.hidden {
@@ -747,14 +968,49 @@ body {
         opacity: 1;
     }
 
+    .info-panel h2 {
+        font-size: 1.5rem;
+        margin-bottom: 8px;
+    }
+
+    .scientific-name {
+        font-size: 0.9rem;
+        margin-bottom: 12px;
+    }
+
+    .status-badge {
+        font-size: 0.95rem;
+        padding: 6px 18px;
+        margin-bottom: 25px;
+    }
+
+    .info-section {
+        margin-bottom: 25px;
+    }
+
+    .info-section h3 {
+        font-size: 1.15rem;
+        margin-bottom: 12px;
+    }
+
+    .info-section p {
+        font-size: 0.95rem;
+        line-height: 1.7;
+    }
+
     /* Info Panel Links - Mobile Optimized */
     .link-button {
-        padding: 14px 18px;
-        font-size: 1rem;
+        padding: 16px 20px;
+        font-size: 1.05rem;
+        min-height: 56px;
     }
 
     .link-icon {
-        font-size: 1.4rem;
+        font-size: 1.5rem;
+    }
+
+    .link-button span:last-child {
+        font-size: 1rem;
     }
 
     .panel-handle {
@@ -867,13 +1123,30 @@ body {
     }
 
     .filter-chips .chip {
-        padding: 8px 14px;
-        font-size: 0.9rem;
+        padding: 10px 16px;
+        font-size: 0.95rem;
+        min-height: 44px;
+    }
+
+    .filter-chips .chip input[type="checkbox"] {
+        width: 20px;
+        height: 20px;
     }
 
     select, input[type="text"] {
-        padding: 12px;
+        padding: 14px;
+        font-size: 1.05rem;
+        min-height: 50px;
+    }
+
+    /* Better spacing for filter groups */
+    .filter-group {
+        margin-bottom: 25px;
+    }
+
+    .filter-group label {
         font-size: 1rem;
+        margin-bottom: 12px;
     }
 }
 
