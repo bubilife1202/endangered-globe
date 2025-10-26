@@ -62,29 +62,47 @@
         <!-- Legend (Collapsible) -->
         <div class="legend" id="legend">
             <button class="legend-toggle" id="legend-toggle" aria-label="범례 접기/펼치기">
-                <span>멸종 등급</span>
+                <div class="legend-title-group">
+                    <span class="legend-title-main">멸종 등급</span>
+                    <span class="legend-title-sub" id="legend-description">IUCN 멸종위기등급</span>
+                </div>
                 <span class="toggle-icon">▼</span>
             </button>
             <div class="legend-content">
                 <div class="legend-item">
-                    <span class="legend-color" style="background: #000000;"></span>
-                    <span>EX</span>
+                    <div class="legend-item-left">
+                        <span class="legend-color" style="background: #000000;"></span>
+                        <span class="legend-code">EX</span>
+                    </div>
+                    <span class="legend-desc" data-status="EX">이미 멸종</span>
                 </div>
                 <div class="legend-item">
-                    <span class="legend-color" style="background: #4A4A4A;"></span>
-                    <span>EW</span>
+                    <div class="legend-item-left">
+                        <span class="legend-color" style="background: #4A4A4A;"></span>
+                        <span class="legend-code">EW</span>
+                    </div>
+                    <span class="legend-desc" data-status="EW">야생에서 멸종</span>
                 </div>
                 <div class="legend-item">
-                    <span class="legend-color" style="background: #D32F2F;"></span>
-                    <span>CR</span>
+                    <div class="legend-item-left">
+                        <span class="legend-color" style="background: #D32F2F;"></span>
+                        <span class="legend-code">CR</span>
+                    </div>
+                    <span class="legend-desc" data-status="CR">심각한 위험</span>
                 </div>
                 <div class="legend-item">
-                    <span class="legend-color" style="background: #FF6F00;"></span>
-                    <span>EN</span>
+                    <div class="legend-item-left">
+                        <span class="legend-color" style="background: #FF6F00;"></span>
+                        <span class="legend-code">EN</span>
+                    </div>
+                    <span class="legend-desc" data-status="EN">멸종 위기</span>
                 </div>
                 <div class="legend-item">
-                    <span class="legend-color" style="background: #FBC02D;"></span>
-                    <span>VU</span>
+                    <div class="legend-item-left">
+                        <span class="legend-color" style="background: #FBC02D;"></span>
+                        <span class="legend-code">VU</span>
+                    </div>
+                    <span class="legend-desc" data-status="VU">취약</span>
                 </div>
             </div>
         </div>

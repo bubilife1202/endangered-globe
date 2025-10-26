@@ -72,6 +72,7 @@ class App {
         // Language change
         this.ui.onLanguageChange = (lang) => {
             this.globe.updateGeographicLabels();
+            this.globe.updateSpeciesLabels();
         };
     }
 

@@ -686,6 +686,20 @@ export class Globe {
         this.addGeographicLabels();
     }
 
+    updateSpeciesLabels() {
+        // Update species label text based on current language
+        const currentLang = i18n.getLanguage();
+
+        this.labels.forEach(label => {
+            if (label.userData && label.userData.commonName) {
+                const species = label.userData;
+                const displayName = currentLang === 'ko' ? species.commonNameKo : species.commonName;
+                const displayText = this.isMobile ? species.emoji : `${species.emoji} ${displayName}`;
+                label.element.textContent = displayText;
+            }
+        });
+    }
+
     addGeoLabel(text, lat, lng, fontSize, color, weight = 700, fontStyle = 'normal') {
         const labelDiv = document.createElement('div');
         labelDiv.className = 'geo-label';
@@ -832,15 +846,22 @@ export class Globe {
     }
 
     addLabel(species, x, y, z) {
-        const { commonName, emoji, status } = species;
+        const { commonName, commonNameKo, emoji, status } = species;
 
         // Create label element
         const labelDiv = document.createElement('div');
         labelDiv.className = 'species-label';
 
+        // Get current language and select appropriate name
+        const currentLang = i18n.getLanguage();
+        const displayName = currentLang === 'ko' ? commonNameKo : commonName;
+
         // Show emoji on mobile, name on desktop
-        const displayText = this.isMobile ? emoji : `${emoji} ${commonName}`;
+        const displayText = this.isMobile ? emoji : `${emoji} ${displayName}`;
         labelDiv.textContent = displayText;
+
+        // Store species data for potential updates
+        labelDiv.dataset.speciesId = species.id;
 
         // Color based on status
         labelDiv.style.color = this.getStatusColorHex(status);
@@ -848,6 +869,7 @@ export class Globe {
         labelDiv.style.padding = this.isMobile ? '3px 6px' : '2px 5px';
 
         const label = new CSS2DObject(labelDiv);
+        label.userData = species; // Store species data on label
 
         // Position label slightly above marker
         const labelRadius = 1.08;

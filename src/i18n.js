@@ -53,6 +53,16 @@ export const translations = {
 
         // Legend
         legendTitle: '범례',
+        legendDescription: 'IUCN 멸종위기등급',
+
+        // Status descriptions
+        statusDesc: {
+            'EX': '이미 멸종',
+            'EW': '야생에서 멸종',
+            'CR': '심각한 위험',
+            'EN': '멸종 위기',
+            'VU': '취약'
+        },
 
         // Timeline
         timelineLabel: '타임라인',
@@ -113,6 +123,16 @@ export const translations = {
 
         // Legend
         legendTitle: 'Legend',
+        legendDescription: 'IUCN Red List Status',
+
+        // Status descriptions
+        statusDesc: {
+            'EX': 'Already extinct',
+            'EW': 'Extinct in the wild',
+            'CR': 'Critical risk',
+            'EN': 'Endangered',
+            'VU': 'Vulnerable'
+        },
 
         // Timeline
         timelineLabel: 'Timeline',

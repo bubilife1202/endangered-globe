@@ -131,7 +131,15 @@ export class UIController {
         this.searchInput.placeholder = i18n.t('searchPlaceholder');
 
         // Update legend
-        document.querySelector('.legend-toggle span:first-child').textContent = i18n.t('legendTitle');
+        document.querySelector('.legend-title-main').textContent = i18n.t('legendTitle');
+        document.querySelector('.legend-title-sub').textContent = i18n.t('legendDescription');
+
+        // Update legend descriptions
+        const legendDescs = document.querySelectorAll('.legend-desc');
+        legendDescs.forEach(desc => {
+            const status = desc.getAttribute('data-status');
+            desc.textContent = i18n.t(`statusDesc.${status}`);
+        });
 
         // Update timeline
         document.querySelector('.timeline-label').textContent = i18n.t('timelineLabel');
@@ -238,8 +246,9 @@ export class UIController {
     showInfoPanel(species) {
         const currentLang = i18n.getLanguage();
 
-        // Populate info panel
-        document.getElementById('species-name').textContent = species.commonName;
+        // Populate info panel with language-specific data
+        const commonName = currentLang === 'ko' ? species.commonNameKo : species.commonName;
+        document.getElementById('species-name').textContent = commonName;
         document.getElementById('scientific-name').textContent = species.name;
 
         // Species image/emoji
@@ -251,14 +260,17 @@ export class UIController {
         statusBadge.textContent = this.getStatusText(species.status);
         statusBadge.style.background = this.getStatusColor(species.status);
 
-        // Threats
-        document.getElementById('threats').textContent = species.threats;
+        // Threats (language-specific)
+        const threats = currentLang === 'ko' ? species.threats : species.threatsEn;
+        document.getElementById('threats').textContent = threats;
 
-        // Habitat
-        document.getElementById('habitat').textContent = species.habitat;
+        // Habitat (language-specific)
+        const habitat = currentLang === 'ko' ? species.habitat : species.habitatEn;
+        document.getElementById('habitat').textContent = habitat;
 
-        // Population
-        document.getElementById('population').textContent = species.population;
+        // Population (language-specific)
+        const population = currentLang === 'ko' ? species.population : species.populationEn;
+        document.getElementById('population').textContent = population;
 
         // Show panel
         this.infoPanel.classList.remove('hidden');
