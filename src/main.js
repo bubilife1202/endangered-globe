@@ -35,6 +35,9 @@ class App {
             // Initial render
             this.updateVisualization();
 
+            // Set initial label visibility from settings
+            this.globe.setLabelsVisible(this.ui.getLabelsVisible());
+
             this.ui.hideLoading();
 
             console.log('The Living Red List Globe initialized successfully!');
@@ -78,6 +81,11 @@ class App {
         this.ui.onLanguageChange = (lang) => {
             this.globe.updateGeographicLabels();
             this.globe.updateSpeciesLabels();
+        };
+
+        // Label visibility change
+        this.ui.onLabelVisibilityChange = (visible) => {
+            this.globe.setLabelsVisible(visible);
         };
     }
 

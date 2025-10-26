@@ -22,12 +22,30 @@
             <h1>🌍 The Living Red List Globe</h1>
             <p class="subtitle">살아있는 멸종위기 지도</p>
             <span class="version-badge">v1.2.0</span>
-            <button class="language-toggle" id="language-toggle" aria-label="언어 전환">
-                <span class="lang-option active" data-lang="ko">한국어</span>
-                <span class="lang-divider">/</span>
-                <span class="lang-option" data-lang="en">English</span>
-            </button>
         </header>
+
+        <!-- Language Toggle (Outside Header) -->
+        <button class="language-toggle" id="language-toggle" aria-label="언어 전환">
+            <span class="lang-option active" data-lang="ko">한국어</span>
+            <span class="lang-divider">/</span>
+            <span class="lang-option" data-lang="en">English</span>
+        </button>
+
+        <!-- Settings Toggle -->
+        <button class="settings-toggle" id="settings-toggle" aria-label="설정">
+            ⚙️
+        </button>
+
+        <!-- Settings Panel -->
+        <div class="settings-panel hidden" id="settings-panel">
+            <h3 id="settings-title">설정</h3>
+            <div class="setting-item">
+                <span class="setting-label" id="label-visibility-label">동물 이름 표시</span>
+                <div class="toggle-switch active" id="label-visibility-toggle">
+                    <div class="toggle-switch-slider"></div>
+                </div>
+            </div>
+        </div>
 
         <!-- Main Canvas -->
         <div id="globe-container"></div>

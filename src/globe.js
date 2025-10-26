@@ -19,6 +19,7 @@ export class Globe {
         this.mouse = new THREE.Vector2();
         this.isMobile = window.innerWidth < 768;
         this.onLabelClick = null; // Callback for label clicks
+        this.labelsVisible = true; // Default to showing labels
 
         this.init();
     }
@@ -1007,6 +1008,13 @@ export class Globe {
         const allLabels = [...this.labels, ...this.geoLabels.map(g => g.label)];
 
         allLabels.forEach(label => {
+            // If labels are disabled globally, hide all species labels
+            if (!this.labelsVisible && this.labels.includes(label)) {
+                label.element.style.opacity = '0';
+                label.element.style.pointerEvents = 'none';
+                return;
+            }
+
             // Get label world position
             const labelWorldPos = new THREE.Vector3();
             label.getWorldPosition(labelWorldPos);
@@ -1031,5 +1039,10 @@ export class Globe {
                 label.element.style.pointerEvents = 'none';
             }
         });
+    }
+
+    setLabelsVisible(visible) {
+        this.labelsVisible = visible;
+        this.updateLabelVisibility();
     }
 }

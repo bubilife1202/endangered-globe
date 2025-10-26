@@ -20,6 +20,12 @@ export class UIController {
         // Language toggle
         this.languageToggle = document.getElementById('language-toggle');
 
+        // Settings panel
+        this.settingsToggle = document.getElementById('settings-toggle');
+        this.settingsPanel = document.getElementById('settings-panel');
+        this.labelVisibilityToggle = document.getElementById('label-visibility-toggle');
+        this.labelsVisible = localStorage.getItem('labelsVisible') !== 'false'; // Default to true
+
         this.statusFilters = [];
         this.continentFilter = document.getElementById('continent-filter');
         this.searchInput = document.getElementById('species-search');
@@ -28,10 +34,12 @@ export class UIController {
         this.onFilterChange = null;
         this.onSearch = null;
         this.onLanguageChange = null;
+        this.onLabelVisibilityChange = null;
 
         this.initializeEventListeners();
         this.initializeMobileControls();
         this.initializeLanguageToggle();
+        this.initializeSettingsPanel();
         this.updateStatusFilters(); // Initialize status filters
 
         // Subscribe to language changes
@@ -118,6 +126,55 @@ export class UIController {
         }
     }
 
+    initializeSettingsPanel() {
+        // Settings toggle button
+        if (this.settingsToggle) {
+            this.settingsToggle.addEventListener('click', (e) => {
+                e.stopPropagation();
+                this.settingsPanel.classList.toggle('hidden');
+            });
+        }
+
+        // Close settings when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!this.settingsPanel.classList.contains('hidden') &&
+                !this.settingsPanel.contains(e.target) &&
+                !this.settingsToggle.contains(e.target)) {
+                this.settingsPanel.classList.add('hidden');
+            }
+        });
+
+        // Label visibility toggle
+        if (this.labelVisibilityToggle) {
+            // Set initial state
+            if (this.labelsVisible) {
+                this.labelVisibilityToggle.classList.add('active');
+            } else {
+                this.labelVisibilityToggle.classList.remove('active');
+            }
+
+            this.labelVisibilityToggle.addEventListener('click', () => {
+                this.labelsVisible = !this.labelsVisible;
+                localStorage.setItem('labelsVisible', this.labelsVisible);
+
+                if (this.labelsVisible) {
+                    this.labelVisibilityToggle.classList.add('active');
+                } else {
+                    this.labelVisibilityToggle.classList.remove('active');
+                }
+
+                // Notify globe to update label visibility
+                if (this.onLabelVisibilityChange) {
+                    this.onLabelVisibilityChange(this.labelsVisible);
+                }
+            });
+        }
+    }
+
+    getLabelsVisible() {
+        return this.labelsVisible;
+    }
+
     updateUILanguage() {
         // Update header
         document.querySelector('.subtitle').textContent = i18n.t('subtitle');
@@ -159,6 +216,24 @@ export class UIController {
         document.querySelector('#link-wikipedia span:last-child').textContent = i18n.t('linkWikipedia');
         document.querySelector('#link-news span:last-child').textContent = i18n.t('linkNews');
         document.querySelector('#link-iucn span:last-child').textContent = i18n.t('linkIUCN');
+
+        // Update info panel section headers
+        const infoPanelSections = document.querySelectorAll('.info-section h3');
+        if (infoPanelSections.length >= 3) {
+            infoPanelSections[0].textContent = i18n.t('threatsTitle');
+            infoPanelSections[1].textContent = i18n.t('habitatTitle');
+            infoPanelSections[2].textContent = i18n.t('populationTitle');
+        }
+
+        // Update settings panel
+        const settingsTitle = document.getElementById('settings-title');
+        if (settingsTitle) {
+            settingsTitle.textContent = i18n.t('settingsTitle');
+        }
+        const labelVisibilityLabel = document.getElementById('label-visibility-label');
+        if (labelVisibilityLabel) {
+            labelVisibilityLabel.textContent = i18n.t('labelVisibility');
+        }
 
         // Update close button aria-label
         this.closeBtn.setAttribute('aria-label', i18n.t('closeButton'));

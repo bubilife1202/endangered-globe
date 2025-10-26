@@ -54,6 +54,9 @@ export const translations = {
         linkWikipedia: '위키피디아',
         linkNews: '뉴스 검색',
         linkIUCN: 'IUCN 정보',
+        threatsTitle: '🚨 왜 위기인가요?',
+        habitatTitle: '📍 어디에 사나요?',
+        populationTitle: '📊 남은 개체 수',
 
         // Legend
         legendTitle: '범례',
@@ -70,6 +73,10 @@ export const translations = {
 
         // Timeline
         timelineLabel: '타임라인',
+
+        // Settings
+        settingsTitle: '설정',
+        labelVisibility: '동물 이름 표시',
 
         // Loading
         loading: '데이터 불러오는 중...'
@@ -128,6 +135,9 @@ export const translations = {
         linkWikipedia: 'Wikipedia',
         linkNews: 'News Search',
         linkIUCN: 'IUCN Info',
+        threatsTitle: '🚨 Why Endangered?',
+        habitatTitle: '📍 Where Do They Live?',
+        populationTitle: '📊 Population Remaining',
 
         // Legend
         legendTitle: 'Legend',
@@ -144,6 +154,10 @@ export const translations = {
 
         // Timeline
         timelineLabel: 'Timeline',
+
+        // Settings
+        settingsTitle: 'Settings',
+        labelVisibility: 'Show Species Labels',
 
         // Loading
         loading: 'Loading data...'
