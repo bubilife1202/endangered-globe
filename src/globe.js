@@ -18,6 +18,7 @@ export class Globe {
         this.raycaster = new THREE.Raycaster();
         this.mouse = new THREE.Vector2();
         this.isMobile = window.innerWidth < 768;
+        this.onLabelClick = null; // Callback for label clicks
 
         this.init();
     }
@@ -867,6 +868,14 @@ export class Globe {
         labelDiv.style.color = this.getStatusColorHex(status);
         labelDiv.style.fontSize = this.isMobile ? '12px' : '11px';
         labelDiv.style.padding = this.isMobile ? '3px 6px' : '2px 5px';
+
+        // Add click event to label
+        labelDiv.addEventListener('click', (e) => {
+            e.stopPropagation(); // Prevent event bubbling
+            if (this.onLabelClick) {
+                this.onLabelClick(species);
+            }
+        });
 
         const label = new CSS2DObject(labelDiv);
         label.userData = species; // Store species data on label

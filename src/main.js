@@ -47,12 +47,17 @@ class App {
     }
 
     setupEventListeners() {
-        // Globe click event
+        // Globe marker click event
         window.addEventListener('click', (event) => {
             this.globe.onMouseClick(event, (species) => {
                 this.ui.showInfoPanel(species);
             });
         });
+
+        // Label click event
+        this.globe.onLabelClick = (species) => {
+            this.ui.showInfoPanel(species);
+        };
 
         // Year slider change
         this.ui.onYearChange = (year) => {
