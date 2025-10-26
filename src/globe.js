@@ -873,13 +873,13 @@ export class Globe {
 
     getStatusColorHex(status) {
         const colors = {
-            'EX': '#000000',
-            'EW': '#9E9E9E',
-            'CR': '#D32F2F',
-            'EN': '#FF6F00',
-            'VU': '#FBC02D',
-            'NT': '#66BB6A',
-            'LC': '#4CAF50'
+            'EX': '#FFFFFF',  // 멸종 - 흰색 (잘 보이도록)
+            'EW': '#CCCCCC',  // 야생 멸종 - 밝은 회색
+            'CR': '#FF5555',  // 위급 - 밝은 빨강
+            'EN': '#FF8C00',  // 위기 - 주황색
+            'VU': '#FFD700',  // 취약 - 금색
+            'NT': '#90EE90',  // 준위협 - 연두색
+            'LC': '#98FB98'   // 관심대상 - 밝은 녹색
         };
         return colors[status] || '#FFFFFF';
     }
