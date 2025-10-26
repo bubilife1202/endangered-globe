@@ -22,6 +22,11 @@
             <h1>🌍 The Living Red List Globe</h1>
             <p class="subtitle">살아있는 멸종위기 지도</p>
             <span class="version-badge">v1.0.0</span>
+            <button class="language-toggle" id="language-toggle" aria-label="언어 전환">
+                <span class="lang-option active" data-lang="ko">한국어</span>
+                <span class="lang-divider">/</span>
+                <span class="lang-option" data-lang="en">English</span>
+            </button>
         </header>
 
         <!-- Main Canvas -->
@@ -115,16 +120,16 @@
             </div>
 
             <div class="filter-group">
-                <label>대륙</label>
+                <label id="continent-filter-label">대륙</label>
                 <select id="continent-filter">
-                    <option value="all">전체</option>
-                    <option value="africa">아프리카</option>
-                    <option value="asia">아시아</option>
-                    <option value="europe">유럽</option>
-                    <option value="north-america">북미</option>
-                    <option value="south-america">남미</option>
-                    <option value="oceania">오세아니아</option>
-                    <option value="antarctica">남극</option>
+                    <option value="ALL">전체</option>
+                    <option value="AFRICA">아프리카</option>
+                    <option value="ASIA">아시아</option>
+                    <option value="EUROPE">유럽</option>
+                    <option value="NORTH AMERICA">북아메리카</option>
+                    <option value="SOUTH AMERICA">남아메리카</option>
+                    <option value="AUSTRALIA">오세아니아</option>
+                    <option value="ANTARCTICA">남극</option>
                 </select>
             </div>
 

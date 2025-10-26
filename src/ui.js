@@ -1,3 +1,5 @@
+import { i18n } from './i18n.js';
+
 // UI Controller
 export class UIController {
     constructor() {
@@ -15,6 +17,9 @@ export class UIController {
         this.legendToggle = document.getElementById('legend-toggle');
         this.legend = document.getElementById('legend');
 
+        // Language toggle
+        this.languageToggle = document.getElementById('language-toggle');
+
         this.statusFilters = [];
         this.continentFilter = document.getElementById('continent-filter');
         this.searchInput = document.getElementById('species-search');
@@ -22,10 +27,18 @@ export class UIController {
         this.onYearChange = null;
         this.onFilterChange = null;
         this.onSearch = null;
+        this.onLanguageChange = null;
 
         this.initializeEventListeners();
         this.initializeMobileControls();
+        this.initializeLanguageToggle();
         this.updateStatusFilters(); // Initialize status filters
+
+        // Subscribe to language changes
+        i18n.addListener(() => this.updateUILanguage());
+
+        // Initialize UI with current language
+        this.updateUILanguage();
     }
 
     initializeEventListeners() {
@@ -71,6 +84,70 @@ export class UIController {
                 }
             }, 300);
         });
+    }
+
+    initializeLanguageToggle() {
+        if (this.languageToggle) {
+            const langOptions = this.languageToggle.querySelectorAll('.lang-option');
+
+            langOptions.forEach(option => {
+                option.addEventListener('click', () => {
+                    const lang = option.dataset.lang;
+                    i18n.setLanguage(lang);
+
+                    // Update active state
+                    langOptions.forEach(opt => opt.classList.remove('active'));
+                    option.classList.add('active');
+
+                    // Notify globe to update labels
+                    if (this.onLanguageChange) {
+                        this.onLanguageChange(lang);
+                    }
+                });
+            });
+
+            // Set initial active state
+            const currentLang = i18n.getLanguage();
+            langOptions.forEach(option => {
+                if (option.dataset.lang === currentLang) {
+                    option.classList.add('active');
+                } else {
+                    option.classList.remove('active');
+                }
+            });
+        }
+    }
+
+    updateUILanguage() {
+        // Update header
+        document.querySelector('.subtitle').textContent = i18n.t('subtitle');
+
+        // Update filter panel
+        document.querySelector('.filter-header h3').textContent = i18n.t('filterTitle');
+        document.querySelector('#continent-filter-label').textContent = i18n.t('continentFilter');
+        document.querySelector('.filter-group label:first-child').textContent = i18n.t('statusFilter');
+
+        // Update search placeholder
+        this.searchInput.placeholder = i18n.t('searchPlaceholder');
+
+        // Update legend
+        document.querySelector('.legend-toggle span:first-child').textContent = i18n.t('legendTitle');
+
+        // Update timeline
+        document.querySelector('.timeline-label').textContent = i18n.t('timelineLabel');
+
+        // Update loading text
+        document.querySelector('.loading p').textContent = i18n.t('loading');
+
+        // Update continent filter options
+        const continentOptions = this.continentFilter.querySelectorAll('option');
+        continentOptions.forEach(option => {
+            const continentKey = option.value;
+            option.textContent = i18n.t(`continents.${continentKey}`);
+        });
+
+        // Update close button aria-label
+        this.closeBtn.setAttribute('aria-label', i18n.t('closeButton'));
     }
 
     updateStatusFilters() {
@@ -159,6 +236,8 @@ export class UIController {
     }
 
     showInfoPanel(species) {
+        const currentLang = i18n.getLanguage();
+
         // Populate info panel
         document.getElementById('species-name').textContent = species.commonName;
         document.getElementById('scientific-name').textContent = species.name;
@@ -190,16 +269,14 @@ export class UIController {
     }
 
     getStatusText(status) {
-        const statusMap = {
-            'EX': 'EX - 멸종 (Extinct)',
-            'EW': 'EW - 야생 멸종 (Extinct in the Wild)',
-            'CR': 'CR - 위급 (Critically Endangered)',
-            'EN': 'EN - 위기 (Endangered)',
-            'VU': 'VU - 취약 (Vulnerable)',
-            'NT': 'NT - 준위협 (Near Threatened)',
-            'LC': 'LC - 관심대상 (Least Concern)'
-        };
-        return statusMap[status] || status;
+        const currentLang = i18n.getLanguage();
+        const statusName = i18n.t(`status.${status}`);
+
+        if (currentLang === 'ko') {
+            return `${status} - ${statusName}`;
+        } else {
+            return `${status} - ${statusName}`;
+        }
     }
 
     getStatusColor(status) {

@@ -68,6 +68,11 @@ class App {
         this.ui.onSearch = (query) => {
             this.updateVisualization();
         };
+
+        // Language change
+        this.ui.onLanguageChange = (lang) => {
+            this.globe.updateGeographicLabels();
+        };
     }
 
     updateVisualization() {
@@ -86,7 +91,7 @@ class App {
         }
 
         // Filter by continent
-        if (filters.continent !== 'all') {
+        if (filters.continent !== 'ALL') {
             filtered = this.dataManager.filterByContinent(filters.continent);
             // Re-apply other filters
             filtered = filtered.filter(s =>

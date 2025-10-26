@@ -88,6 +88,46 @@ body {
     backdrop-filter: blur(5px);
 }
 
+.language-toggle {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 16px;
+    padding: 4px 8px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    cursor: pointer;
+    backdrop-filter: blur(5px);
+    transition: all 0.3s ease;
+}
+
+.language-toggle:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.lang-option {
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 0.7rem;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.6);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.lang-option.active {
+    background: rgba(255, 255, 255, 0.2);
+    color: rgba(255, 255, 255, 1);
+}
+
+.lang-divider {
+    color: rgba(255, 255, 255, 0.4);
+    font-size: 0.7rem;
+}
+
 .header h1 {
     font-size: 2rem;
     margin-bottom: 5px;
@@ -567,6 +607,21 @@ body {
         padding: 3px 8px;
         top: 8px;
         right: 8px;
+    }
+
+    .language-toggle {
+        bottom: 8px;
+        right: 8px;
+        padding: 3px 6px;
+    }
+
+    .lang-option {
+        padding: 3px 6px;
+        font-size: 0.6rem;
+    }
+
+    .lang-divider {
+        font-size: 0.6rem;
     }
 
     /* Info Panel - Bottom Sheet Style */

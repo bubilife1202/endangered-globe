@@ -70,7 +70,8 @@ export class DataManager {
                 threats: '밀렵, 서식지 파괴',
                 population: '약 5,500마리',
                 habitat: '아프리카 동부 및 남부 사바나',
-                emoji: '🦏'
+                emoji: '🦏',
+                continent: 'AFRICA'
             },
             {
                 id: 2,
@@ -83,7 +84,8 @@ export class DataManager {
                 threats: '서식지 손실, 밀렵',
                 population: '약 1,000마리',
                 habitat: '콩고 분지 산악 지대',
-                emoji: '🦍'
+                emoji: '🦍',
+                continent: 'AFRICA'
             },
             {
                 id: 3,
@@ -96,7 +98,8 @@ export class DataManager {
                 threats: '서식지 파괴, 질병',
                 population: '170,000-300,000마리',
                 habitat: '중앙 아프리카 열대우림',
-                emoji: '🐵'
+                emoji: '🐵',
+                continent: 'AFRICA'
             },
 
             // 아시아
@@ -111,7 +114,8 @@ export class DataManager {
                 threats: '밀렵, 서식지 파괴',
                 population: '약 3,900마리',
                 habitat: '아시아 열대우림 및 타이가',
-                emoji: '🐅'
+                emoji: '🐅',
+                continent: 'ASIA'
             },
             {
                 id: 5,
@@ -124,7 +128,8 @@ export class DataManager {
                 threats: '서식지 단편화',
                 population: '약 1,864마리',
                 habitat: '중국 서부 산악 대나무 숲',
-                emoji: '🐼'
+                emoji: '🐼',
+                continent: 'ASIA'
             },
             {
                 id: 6,
@@ -137,7 +142,8 @@ export class DataManager {
                 threats: '팜유 농장으로 인한 서식지 파괴',
                 population: '약 14,600마리',
                 habitat: '수마트라 섬 열대우림',
-                emoji: '🦧'
+                emoji: '🦧',
+                continent: 'ASIA'
             },
             {
                 id: 7,
@@ -150,7 +156,8 @@ export class DataManager {
                 threats: '서식지 손실, 극소 개체군',
                 population: '약 74마리',
                 habitat: '자바 섬 우중쿨론 국립공원',
-                emoji: '🦏'
+                emoji: '🦏',
+                continent: 'ASIA'
             },
 
             // 남미
@@ -165,7 +172,8 @@ export class DataManager {
                 threats: '서식지 파괴, 사냥',
                 population: '알 수 없음',
                 habitat: '중앙아메리카 열대우림',
-                emoji: '🦌'
+                emoji: '🦌',
+                continent: 'SOUTH AMERICA'
             },
             {
                 id: 9,
@@ -178,7 +186,8 @@ export class DataManager {
                 threats: '불법 거래, 서식지 손실',
                 population: '약 250-300마리',
                 habitat: '볼리비아 사바나',
-                emoji: '🦜'
+                emoji: '🦜',
+                continent: 'SOUTH AMERICA'
             },
 
             // 북미
@@ -193,7 +202,8 @@ export class DataManager {
                 threats: '기후 변화로 인한 해빙 감소',
                 population: '약 26,000마리',
                 habitat: '북극 해빙 지역',
-                emoji: '🐻‍❄️'
+                emoji: '🐻‍❄️',
+                continent: 'NORTH AMERICA'
             },
 
             // 오세아니아
@@ -208,7 +218,8 @@ export class DataManager {
                 threats: '산불, 서식지 파괴, 질병',
                 population: '약 100,000-500,000마리',
                 habitat: '호주 동부 유칼립투스 숲',
-                emoji: '🐨'
+                emoji: '🐨',
+                continent: 'AUSTRALIA'
             },
             {
                 id: 12,
@@ -221,7 +232,8 @@ export class DataManager {
                 threats: '사냥, 서식지 손실',
                 population: '알 수 없음',
                 habitat: '뉴기니 섬 산악 지대',
-                emoji: '🦔'
+                emoji: '🦔',
+                continent: 'AUSTRALIA'
             },
 
             // 유럽
@@ -236,7 +248,8 @@ export class DataManager {
                 threats: '먹이 감소, 서식지 단편화',
                 population: '약 400마리',
                 habitat: '이베리아 반도 지중해 관목지',
-                emoji: '🐈'
+                emoji: '🐈',
+                continent: 'EUROPE'
             },
 
             // 멸종된 종 (역사적 기록)
@@ -251,7 +264,8 @@ export class DataManager {
                 threats: '인간의 사냥',
                 population: '멸종 (1936년)',
                 habitat: '태즈메이니아 섬 (과거)',
-                emoji: '🐺'
+                emoji: '🐺',
+                continent: 'AUSTRALIA'
             },
             {
                 id: 15,
@@ -264,7 +278,8 @@ export class DataManager {
                 threats: '인간의 사냥, 외래종',
                 population: '멸종 (1662년)',
                 habitat: '모리셔스 섬 (과거)',
-                emoji: '🦤'
+                emoji: '🦤',
+                continent: 'AFRICA'
             },
 
             // 추가 위급종
@@ -279,7 +294,8 @@ export class DataManager {
                 threats: '어망에 의한 혼획',
                 population: '약 10마리',
                 habitat: '캘리포니아만 북부',
-                emoji: '🐬'
+                emoji: '🐬',
+                continent: 'NORTH AMERICA'
             },
             {
                 id: 17,
@@ -292,7 +308,8 @@ export class DataManager {
                 threats: '선박 충돌, 어망 얽힘',
                 population: '약 336마리',
                 habitat: '북대서양',
-                emoji: '🐋'
+                emoji: '🐋',
+                continent: 'NORTH AMERICA'
             },
             {
                 id: 18,
@@ -305,7 +322,8 @@ export class DataManager {
                 threats: '서식지 제한, 질병',
                 population: '약 674마리',
                 habitat: '인도 기르 숲',
-                emoji: '🦁'
+                emoji: '🦁',
+                continent: 'ASIA'
             },
             {
                 id: 19,
@@ -318,7 +336,8 @@ export class DataManager {
                 threats: '과거 포경, 선박 충돌',
                 population: '약 10,000-25,000마리',
                 habitat: '전 세계 해양',
-                emoji: '🐋'
+                emoji: '🐋',
+                continent: 'ANTARCTICA'
             },
             {
                 id: 20,
@@ -331,7 +350,8 @@ export class DataManager {
                 threats: '서식지 손실, 인간-코끼리 갈등',
                 population: '약 40,000-50,000마리',
                 habitat: '남아시아 및 동남아시아',
-                emoji: '🐘'
+                emoji: '🐘',
+                continent: 'ASIA'
             }
         ];
     }
@@ -362,25 +382,8 @@ export class DataManager {
      * Filter species by continent
      */
     filterByContinent(continent) {
-        if (continent === 'all') return this.species;
-
-        const continentRanges = {
-            'africa': { lat: [-35, 37], lng: [-20, 52] },
-            'asia': { lat: [-10, 75], lng: [25, 180] },
-            'europe': { lat: [35, 71], lng: [-10, 40] },
-            'north-america': { lat: [15, 72], lng: [-170, -52] },
-            'south-america': { lat: [-56, 13], lng: [-81, -34] },
-            'oceania': { lat: [-47, 0], lng: [110, 180] },
-            'antarctica': { lat: [-90, -60], lng: [-180, 180] }
-        };
-
-        const range = continentRanges[continent];
-        if (!range) return this.species;
-
-        return this.species.filter(s => {
-            return s.lat >= range.lat[0] && s.lat <= range.lat[1] &&
-                   s.lng >= range.lng[0] && s.lng <= range.lng[1];
-        });
+        if (continent === 'ALL') return this.species;
+        return this.species.filter(s => s.continent === continent);
     }
 
     /**

@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { CSS2DRenderer, CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js';
+import { i18n } from './i18n.js';
 
 export class Globe {
     constructor(container) {
@@ -13,6 +14,7 @@ export class Globe {
         this.globe = null;
         this.markers = [];
         this.labels = [];
+        this.geoLabels = []; // Store geographic labels separately
         this.raycaster = new THREE.Raycaster();
         this.mouse = new THREE.Vector2();
         this.isMobile = window.innerWidth < 768;
@@ -638,35 +640,50 @@ export class Globe {
     }
 
     addGeographicLabels() {
-        // Continent labels
-        const continentLabels = [
-            { name: 'AFRICA', lat: 5, lng: 20, size: '18px' },
-            { name: 'EUROPE', lat: 55, lng: 15, size: '14px' },
-            { name: 'ASIA', lat: 45, lng: 90, size: '20px' },
-            { name: 'NORTH AMERICA', lat: 50, lng: -100, size: '16px' },
-            { name: 'SOUTH AMERICA', lat: -15, lng: -60, size: '16px' },
-            { name: 'AUSTRALIA', lat: -25, lng: 135, size: '14px' },
-            { name: 'ANTARCTICA', lat: -75, lng: 0, size: '14px' }
-        ];
-
-        // Ocean labels
-        const oceanLabels = [
-            { name: 'PACIFIC OCEAN', lat: 0, lng: -140, size: '16px', color: '#5599cc' },
-            { name: 'ATLANTIC OCEAN', lat: 15, lng: -30, size: '16px', color: '#5599cc' },
-            { name: 'INDIAN OCEAN', lat: -20, lng: 75, size: '14px', color: '#5599cc' },
-            { name: 'ARCTIC OCEAN', lat: 80, lng: 0, size: '12px', color: '#6bb6dd' },
-            { name: 'SOUTHERN OCEAN', lat: -65, lng: 90, size: '12px', color: '#6bb6dd' }
-        ];
+        // Define geographic labels with their positions
+        this.geoLabelDefinitions = {
+            continents: [
+                { key: 'AFRICA', lat: 5, lng: 20, size: '18px' },
+                { key: 'EUROPE', lat: 55, lng: 15, size: '14px' },
+                { key: 'ASIA', lat: 45, lng: 90, size: '20px' },
+                { key: 'NORTH AMERICA', lat: 50, lng: -100, size: '16px' },
+                { key: 'SOUTH AMERICA', lat: -15, lng: -60, size: '16px' },
+                { key: 'AUSTRALIA', lat: -25, lng: 135, size: '14px' },
+                { key: 'ANTARCTICA', lat: -75, lng: 0, size: '14px' }
+            ],
+            oceans: [
+                { key: 'PACIFIC OCEAN', lat: 0, lng: -140, size: '16px', color: '#5599cc' },
+                { key: 'ATLANTIC OCEAN', lat: 15, lng: -30, size: '16px', color: '#5599cc' },
+                { key: 'INDIAN OCEAN', lat: -20, lng: 75, size: '14px', color: '#5599cc' },
+                { key: 'ARCTIC OCEAN', lat: 80, lng: 0, size: '12px', color: '#6bb6dd' },
+                { key: 'SOUTHERN OCEAN', lat: -65, lng: 90, size: '12px', color: '#6bb6dd' }
+            ]
+        };
 
         // Add continent labels
-        continentLabels.forEach(item => {
-            this.addGeoLabel(item.name, item.lat, item.lng, item.size, '#4a5a3a', 800);
+        this.geoLabelDefinitions.continents.forEach(item => {
+            const text = i18n.t(`continents.${item.key}`);
+            const label = this.addGeoLabel(text, item.lat, item.lng, item.size, '#4a5a3a', 800);
+            this.geoLabels.push({ label, definition: item, type: 'continent' });
         });
 
         // Add ocean labels
-        oceanLabels.forEach(item => {
-            this.addGeoLabel(item.name, item.lat, item.lng, item.size, item.color, 600, 'italic');
+        this.geoLabelDefinitions.oceans.forEach(item => {
+            const text = i18n.t(`oceans.${item.key}`);
+            const label = this.addGeoLabel(text, item.lat, item.lng, item.size, item.color, 600, 'italic');
+            this.geoLabels.push({ label, definition: item, type: 'ocean' });
         });
+    }
+
+    updateGeographicLabels() {
+        // Remove old labels
+        this.geoLabels.forEach(({ label }) => {
+            this.globe.remove(label);
+        });
+        this.geoLabels = [];
+
+        // Re-add labels with new language
+        this.addGeographicLabels();
     }
 
     addGeoLabel(text, lat, lng, fontSize, color, weight = 700, fontStyle = 'normal') {
@@ -693,6 +710,8 @@ export class Globe {
 
         this.globe.add(label);
         this.labels.push(label);
+
+        return label;
     }
 
     addGridLines() {
