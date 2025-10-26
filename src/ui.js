@@ -8,6 +8,13 @@ export class UIController {
         this.speciesCountDisplay = document.getElementById('species-count');
         this.loading = document.getElementById('loading');
 
+        // Mobile controls
+        this.menuToggle = document.getElementById('menu-toggle');
+        this.filterPanel = document.getElementById('filter-panel');
+        this.filterClose = document.getElementById('filter-close');
+        this.legendToggle = document.getElementById('legend-toggle');
+        this.legend = document.getElementById('legend');
+
         this.statusFilters = [];
         this.continentFilter = document.getElementById('continent-filter');
         this.searchInput = document.getElementById('species-search');
@@ -17,6 +24,7 @@ export class UIController {
         this.onSearch = null;
 
         this.initializeEventListeners();
+        this.initializeMobileControls();
         this.updateStatusFilters(); // Initialize status filters
     }
 
@@ -70,6 +78,75 @@ export class UIController {
         this.statusFilters = Array.from(checkboxes)
             .filter(cb => cb.checked)
             .map(cb => cb.value);
+    }
+
+    initializeMobileControls() {
+        // Hamburger menu toggle
+        if (this.menuToggle) {
+            this.menuToggle.addEventListener('click', () => {
+                this.menuToggle.classList.toggle('active');
+                this.filterPanel.classList.toggle('open');
+            });
+        }
+
+        // Filter panel close button
+        if (this.filterClose) {
+            this.filterClose.addEventListener('click', () => {
+                this.menuToggle.classList.remove('active');
+                this.filterPanel.classList.remove('open');
+            });
+        }
+
+        // Legend toggle (collapsible)
+        if (this.legendToggle) {
+            this.legendToggle.addEventListener('click', () => {
+                this.legend.classList.toggle('collapsed');
+            });
+        }
+
+        // Close filter panel when clicking outside on mobile
+        document.addEventListener('click', (e) => {
+            const isMobile = window.innerWidth < 768;
+            if (isMobile &&
+                this.filterPanel.classList.contains('open') &&
+                !this.filterPanel.contains(e.target) &&
+                !this.menuToggle.contains(e.target)) {
+                this.menuToggle.classList.remove('active');
+                this.filterPanel.classList.remove('open');
+            }
+        });
+
+        // Touch gestures for info panel (swipe down to close on mobile)
+        let startY = 0;
+        let currentY = 0;
+
+        this.infoPanel.addEventListener('touchstart', (e) => {
+            startY = e.touches[0].clientY;
+        }, { passive: true });
+
+        this.infoPanel.addEventListener('touchmove', (e) => {
+            currentY = e.touches[0].clientY;
+            const diff = currentY - startY;
+
+            // Allow swipe down to close on mobile
+            if (diff > 0 && window.innerWidth < 768) {
+                this.infoPanel.style.transform = `translateY(${diff}px)`;
+            }
+        }, { passive: true });
+
+        this.infoPanel.addEventListener('touchend', () => {
+            const diff = currentY - startY;
+
+            if (diff > 100 && window.innerWidth < 768) {
+                // Swipe threshold exceeded, close panel
+                this.hideInfoPanel();
+            }
+
+            // Reset transform
+            this.infoPanel.style.transform = '';
+            startY = 0;
+            currentY = 0;
+        });
     }
 
     getActiveFilters() {
