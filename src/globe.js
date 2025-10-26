@@ -75,6 +75,9 @@ export class Globe {
         // Create Globe with continents
         this.createGlobe();
 
+        // Add geographic labels (continents and oceans)
+        this.addGeographicLabels();
+
         // Create Stars
         this.createStars();
 
@@ -247,12 +250,17 @@ export class Globe {
     }
 
     drawContinents(ctx, width, height) {
-        // Draw continents with different shades for variety
+        // First, add terrain features (deserts, forests, etc.)
+        this.addTerrainFeatures(ctx, width, height);
+
+        // Draw continents with realistic terrain colors
         const continents = [
-            // Africa - detailed shape
+            // Africa - varied terrain
             {
-                color: '#3a7d44',
-                border: '#2d6336',
+                name: 'Africa',
+                color: '#6B8E5A',  // Savanna green
+                border: '#5a7a4a',
+                terrain: 'savanna',
                 points: [
                     { lat: 37, lng: 10 }, { lat: 35, lng: 15 }, { lat: 32, lng: 22 },
                     { lat: 30, lng: 32 }, { lat: 15, lng: 43 }, { lat: 12, lng: 51 },
@@ -262,10 +270,12 @@ export class Globe {
                     { lat: 15, lng: 8 }, { lat: 25, lng: 8 }, { lat: 32, lng: 6 }
                 ]
             },
-            // Europe - detailed
+            // Europe - temperate
             {
-                color: '#4a8d54',
-                border: '#3d7345',
+                name: 'Europe',
+                color: '#5D8A66',  // Temperate forest
+                border: '#4d7356',
+                terrain: 'forest',
                 points: [
                     { lat: 71, lng: 25 }, { lat: 70, lng: 30 }, { lat: 60, lng: 30 },
                     { lat: 55, lng: 37 }, { lat: 45, lng: 40 }, { lat: 42, lng: 44 },
@@ -275,10 +285,12 @@ export class Globe {
                     { lat: 65, lng: 10 }, { lat: 70, lng: 15 }
                 ]
             },
-            // Asia - large and detailed
+            // Asia - diverse terrain
             {
-                color: '#3d7d47',
-                border: '#2f6338',
+                name: 'Asia',
+                color: '#6B8555',  // Mixed terrain
+                border: '#5a7345',
+                terrain: 'mixed',
                 points: [
                     { lat: 75, lng: 60 }, { lat: 78, lng: 90 }, { lat: 73, lng: 125 },
                     { lat: 65, lng: 145 }, { lat: 60, lng: 150 }, { lat: 50, lng: 142 },
@@ -291,10 +303,12 @@ export class Globe {
                     { lat: 65, lng: 60 }
                 ]
             },
-            // North America
+            // North America - forests and plains
             {
-                color: '#4d905d',
-                border: '#3e7349',
+                name: 'North America',
+                color: '#6F9560',  // Prairie/Forest
+                border: '#5f8350',
+                terrain: 'plains',
                 points: [
                     { lat: 72, lng: -95 }, { lat: 75, lng: -85 }, { lat: 72, lng: -70 },
                     { lat: 60, lng: -65 }, { lat: 50, lng: -55 }, { lat: 45, lng: -60 },
@@ -306,10 +320,12 @@ export class Globe {
                     { lat: 70, lng: -130 }, { lat: 72, lng: -110 }
                 ]
             },
-            // South America
+            // South America - rainforest
             {
-                color: '#43865a',
-                border: '#356b47',
+                name: 'South America',
+                color: '#4A7C40',  // Rainforest green
+                border: '#3a6c30',
+                terrain: 'rainforest',
                 points: [
                     { lat: 12, lng: -72 }, { lat: 10, lng: -65 }, { lat: 5, lng: -60 },
                     { lat: -5, lng: -55 }, { lat: -10, lng: -50 }, { lat: -20, lng: -43 },
@@ -320,10 +336,12 @@ export class Globe {
                     { lat: 10, lng: -75 }
                 ]
             },
-            // Australia
+            // Australia - arid/coastal
             {
-                color: '#5a9d6a',
-                border: '#4a8358',
+                name: 'Australia',
+                color: '#8B9E6D',  // Arid/scrubland
+                border: '#7b8e5d',
+                terrain: 'desert',
                 points: [
                     { lat: -10, lng: 130 }, { lat: -12, lng: 135 }, { lat: -15, lng: 138 },
                     { lat: -20, lng: 142 }, { lat: -25, lng: 145 }, { lat: -30, lng: 148 },
@@ -333,10 +351,12 @@ export class Globe {
                     { lat: -18, lng: 122 }, { lat: -14, lng: 128 }
                 ]
             },
-            // Greenland
+            // Greenland - ice
             {
-                color: '#e8f5e8',  // Ice/snow color
-                border: '#c0d8c0',
+                name: 'Greenland',
+                color: '#e8f2f0',  // Ice/snow
+                border: '#c8d8d0',
+                terrain: 'ice',
                 points: [
                     { lat: 83, lng: -35 }, { lat: 80, lng: -20 }, { lat: 76, lng: -18 },
                     { lat: 70, lng: -22 }, { lat: 65, lng: -35 }, { lat: 60, lng: -45 },
@@ -344,10 +364,12 @@ export class Globe {
                     { lat: 80, lng: -50 }, { lat: 82, lng: -42 }
                 ]
             },
-            // Antarctica (partial)
+            // Antarctica - ice
             {
-                color: '#f0f8ff',  // Ice
-                border: '#d0e0f0',
+                name: 'Antarctica',
+                color: '#f5fffe',  // Pure ice
+                border: '#e0f0f0',
+                terrain: 'ice',
                 points: [
                     { lat: -60, lng: -180 }, { lat: -65, lng: -90 }, { lat: -70, lng: 0 },
                     { lat: -65, lng: 90 }, { lat: -60, lng: 180 }, { lat: -85, lng: 0 }
@@ -355,13 +377,205 @@ export class Globe {
             }
         ];
 
-        // Draw each continent with its own color
+        // Draw each continent with terrain-specific styling
         continents.forEach(continent => {
-            this.drawContinent(ctx, width, height, continent.points, continent.color, continent.border);
+            this.drawContinentWithTerrain(ctx, width, height, continent);
         });
 
-        // Add country borders for major countries
+        // Add country borders
         this.drawCountryBorders(ctx, width, height);
+    }
+
+    addTerrainFeatures(ctx, width, height) {
+        // Sahara Desert (light brown/yellow)
+        ctx.fillStyle = '#D4A574';
+        const saharaPoints = [
+            { lat: 30, lng: -10 }, { lat: 30, lng: 30 }, { lat: 15, lng: 35 },
+            { lat: 15, lng: 0 }
+        ];
+        this.drawTerrainPatch(ctx, width, height, saharaPoints);
+
+        // Amazon Rainforest (dark green)
+        ctx.fillStyle = '#2D5016';
+        const amazonPoints = [
+            { lat: 5, lng: -75 }, { lat: -5, lng: -50 }, { lat: -10, lng: -55 },
+            { lat: 0, lng: -80 }
+        ];
+        this.drawTerrainPatch(ctx, width, height, amazonPoints);
+
+        // Siberian Tundra (light brown)
+        ctx.fillStyle = '#A0917B';
+        const siberiaPoints = [
+            { lat: 70, lng: 60 }, { lat: 70, lng: 120 }, { lat: 60, lng: 140 },
+            { lat: 60, lng: 80 }
+        ];
+        this.drawTerrainPatch(ctx, width, height, siberiaPoints);
+
+        // Gobi Desert (tan)
+        ctx.fillStyle = '#C9B896';
+        const gobiPoints = [
+            { lat: 45, lng: 100 }, { lat: 42, lng: 115 }, { lat: 38, lng: 110 },
+            { lat: 40, lng: 95 }
+        ];
+        this.drawTerrainPatch(ctx, width, height, gobiPoints);
+
+        // Australian Outback (red-brown)
+        ctx.fillStyle = '#B8885B';
+        const outbackPoints = [
+            { lat: -20, lng: 130 }, { lat: -30, lng: 140 }, { lat: -30, lng: 125 },
+            { lat: -22, lng: 120 }
+        ];
+        this.drawTerrainPatch(ctx, width, height, outbackPoints);
+    }
+
+    drawTerrainPatch(ctx, width, height, points) {
+        if (points.length < 3) return;
+
+        ctx.beginPath();
+        points.forEach((point, i) => {
+            const x = ((point.lng + 180) / 360) * width;
+            const y = ((90 - point.lat) / 180) * height;
+            if (i === 0) {
+                ctx.moveTo(x, y);
+            } else {
+                ctx.lineTo(x, y);
+            }
+        });
+        ctx.closePath();
+        ctx.globalAlpha = 0.4;
+        ctx.fill();
+        ctx.globalAlpha = 1.0;
+    }
+
+    drawContinentWithTerrain(ctx, width, height, continent) {
+        const { points, color, border, terrain } = continent;
+        if (points.length < 3) return;
+
+        // Base color
+        ctx.fillStyle = color;
+        ctx.strokeStyle = border;
+        ctx.lineWidth = 2;
+
+        ctx.beginPath();
+        points.forEach((point, i) => {
+            const x = ((point.lng + 180) / 360) * width;
+            const y = ((90 - point.lat) / 180) * height;
+            if (i === 0) {
+                ctx.moveTo(x, y);
+            } else {
+                ctx.lineTo(x, y);
+            }
+        });
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+
+        // Add texture based on terrain type
+        ctx.save();
+        ctx.clip();
+
+        switch(terrain) {
+            case 'forest':
+                this.addForestTexture(ctx, width, height, points);
+                break;
+            case 'desert':
+                this.addDesertTexture(ctx, width, height, points);
+                break;
+            case 'rainforest':
+                this.addRainforestTexture(ctx, width, height, points);
+                break;
+            case 'savanna':
+                this.addSavannaTexture(ctx, width, height, points);
+                break;
+            case 'plains':
+                this.addPlainsTexture(ctx, width, height, points);
+                break;
+        }
+
+        ctx.restore();
+
+        // Add subtle gradient for depth
+        ctx.globalAlpha = 0.1;
+        const gradient = ctx.createLinearGradient(0, 0, width/2, height/2);
+        gradient.addColorStop(0, '#000000');
+        gradient.addColorStop(1, '#ffffff');
+        ctx.fillStyle = gradient;
+
+        ctx.beginPath();
+        points.forEach((point, i) => {
+            const x = ((point.lng + 180) / 360) * width;
+            const y = ((90 - point.lat) / 180) * height;
+            if (i === 0) ctx.moveTo(x, y);
+            else ctx.lineTo(x, y);
+        });
+        ctx.closePath();
+        ctx.fill();
+        ctx.globalAlpha = 1.0;
+    }
+
+    addForestTexture(ctx, width, height, points) {
+        // Add darker green patches for forest
+        ctx.globalAlpha = 0.2;
+        for (let i = 0; i < 30; i++) {
+            const point = points[Math.floor(Math.random() * points.length)];
+            const x = ((point.lng + 180) / 360) * width + (Math.random() - 0.5) * 50;
+            const y = ((90 - point.lat) / 180) * height + (Math.random() - 0.5) * 50;
+            ctx.fillStyle = '#2a5a2a';
+            ctx.fillRect(x, y, 10 + Math.random() * 10, 10 + Math.random() * 10);
+        }
+        ctx.globalAlpha = 1.0;
+    }
+
+    addDesertTexture(ctx, width, height, points) {
+        // Add sandy/tan patches
+        ctx.globalAlpha = 0.15;
+        for (let i = 0; i < 40; i++) {
+            const point = points[Math.floor(Math.random() * points.length)];
+            const x = ((point.lng + 180) / 360) * width + (Math.random() - 0.5) * 60;
+            const y = ((90 - point.lat) / 180) * height + (Math.random() - 0.5) * 60;
+            ctx.fillStyle = Math.random() > 0.5 ? '#C9B896' : '#B8A686';
+            ctx.fillRect(x, y, 8 + Math.random() * 8, 8 + Math.random() * 8);
+        }
+        ctx.globalAlpha = 1.0;
+    }
+
+    addRainforestTexture(ctx, width, height, points) {
+        // Very dark green patches for dense jungle
+        ctx.globalAlpha = 0.25;
+        for (let i = 0; i < 50; i++) {
+            const point = points[Math.floor(Math.random() * points.length)];
+            const x = ((point.lng + 180) / 360) * width + (Math.random() - 0.5) * 40;
+            const y = ((90 - point.lat) / 180) * height + (Math.random() - 0.5) * 40;
+            ctx.fillStyle = '#1a4010';
+            ctx.fillRect(x, y, 6 + Math.random() * 6, 6 + Math.random() * 6);
+        }
+        ctx.globalAlpha = 1.0;
+    }
+
+    addSavannaTexture(ctx, width, height, points) {
+        // Yellow-green patches for grassland
+        ctx.globalAlpha = 0.15;
+        for (let i = 0; i < 35; i++) {
+            const point = points[Math.floor(Math.random() * points.length)];
+            const x = ((point.lng + 180) / 360) * width + (Math.random() - 0.5) * 50;
+            const y = ((90 - point.lat) / 180) * height + (Math.random() - 0.5) * 50;
+            ctx.fillStyle = Math.random() > 0.5 ? '#8B9E5A' : '#7A8E4A';
+            ctx.fillRect(x, y, 9 + Math.random() * 9, 9 + Math.random() * 9);
+        }
+        ctx.globalAlpha = 1.0;
+    }
+
+    addPlainsTexture(ctx, width, height, points) {
+        // Light green patches for prairies
+        ctx.globalAlpha = 0.12;
+        for (let i = 0; i < 30; i++) {
+            const point = points[Math.floor(Math.random() * points.length)];
+            const x = ((point.lng + 180) / 360) * width + (Math.random() - 0.5) * 55;
+            const y = ((90 - point.lat) / 180) * height + (Math.random() - 0.5) * 55;
+            ctx.fillStyle = '#6F9E50';
+            ctx.fillRect(x, y, 10 + Math.random() * 10, 10 + Math.random() * 10);
+        }
+        ctx.globalAlpha = 1.0;
     }
 
     drawCountryBorders(ctx, width, height) {
@@ -423,35 +637,62 @@ export class Globe {
         ctx.setLineDash([]);
     }
 
-    drawContinent(ctx, width, height, points, fillColor = '#2d5a3d', strokeColor = '#3d6a4d') {
-        if (points.length < 3) return;
+    addGeographicLabels() {
+        // Continent labels
+        const continentLabels = [
+            { name: 'AFRICA', lat: 5, lng: 20, size: '18px' },
+            { name: 'EUROPE', lat: 55, lng: 15, size: '14px' },
+            { name: 'ASIA', lat: 45, lng: 90, size: '20px' },
+            { name: 'NORTH AMERICA', lat: 50, lng: -100, size: '16px' },
+            { name: 'SOUTH AMERICA', lat: -15, lng: -60, size: '16px' },
+            { name: 'AUSTRALIA', lat: -25, lng: 135, size: '14px' },
+            { name: 'ANTARCTICA', lat: -75, lng: 0, size: '14px' }
+        ];
 
-        ctx.fillStyle = fillColor;
-        ctx.strokeStyle = strokeColor;
-        ctx.lineWidth = 2;
+        // Ocean labels
+        const oceanLabels = [
+            { name: 'PACIFIC OCEAN', lat: 0, lng: -140, size: '16px', color: '#5599cc' },
+            { name: 'ATLANTIC OCEAN', lat: 15, lng: -30, size: '16px', color: '#5599cc' },
+            { name: 'INDIAN OCEAN', lat: -20, lng: 75, size: '14px', color: '#5599cc' },
+            { name: 'ARCTIC OCEAN', lat: 80, lng: 0, size: '12px', color: '#6bb6dd' },
+            { name: 'SOUTHERN OCEAN', lat: -65, lng: 90, size: '12px', color: '#6bb6dd' }
+        ];
 
-        ctx.beginPath();
-        points.forEach((point, i) => {
-            const x = ((point.lng + 180) / 360) * width;
-            const y = ((90 - point.lat) / 180) * height;
-            if (i === 0) {
-                ctx.moveTo(x, y);
-            } else {
-                ctx.lineTo(x, y);
-            }
+        // Add continent labels
+        continentLabels.forEach(item => {
+            this.addGeoLabel(item.name, item.lat, item.lng, item.size, '#4a5a3a', 800);
         });
-        ctx.closePath();
-        ctx.fill();
-        ctx.stroke();
 
-        // Add texture/shading for depth
-        ctx.globalAlpha = 0.15;
-        const gradient = ctx.createLinearGradient(0, 0, width, height);
-        gradient.addColorStop(0, '#000000');
-        gradient.addColorStop(1, '#ffffff');
-        ctx.fillStyle = gradient;
-        ctx.fill();
-        ctx.globalAlpha = 1.0;
+        // Add ocean labels
+        oceanLabels.forEach(item => {
+            this.addGeoLabel(item.name, item.lat, item.lng, item.size, item.color, 600, 'italic');
+        });
+    }
+
+    addGeoLabel(text, lat, lng, fontSize, color, weight = 700, fontStyle = 'normal') {
+        const labelDiv = document.createElement('div');
+        labelDiv.className = 'geo-label';
+        labelDiv.textContent = text;
+        labelDiv.style.fontSize = fontSize;
+        labelDiv.style.color = color;
+        labelDiv.style.fontWeight = weight;
+        labelDiv.style.fontStyle = fontStyle;
+
+        const label = new CSS2DObject(labelDiv);
+
+        // Convert lat/lng to 3D coordinates (slightly above surface)
+        const phi = (90 - lat) * (Math.PI / 180);
+        const theta = (lng + 180) * (Math.PI / 180);
+        const radius = 1.01; // Just above surface
+
+        const x = -radius * Math.sin(phi) * Math.cos(theta);
+        const y = radius * Math.cos(phi);
+        const z = radius * Math.sin(phi) * Math.sin(theta);
+
+        label.position.set(x, y, z);
+
+        this.globe.add(label);
+        this.labels.push(label);
     }
 
     addGridLines() {
