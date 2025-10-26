@@ -959,8 +959,46 @@ export class Globe {
         // Auto-rotate globe slowly
         this.globe.rotation.y += 0.001;
 
+        // Update label visibility (only show labels on front side)
+        this.updateLabelVisibility();
+
         this.controls.update();
         this.renderer.render(this.scene, this.camera);
         this.labelRenderer.render(this.scene, this.camera);
+    }
+
+    updateLabelVisibility() {
+        // Get camera direction
+        const cameraDirection = new THREE.Vector3();
+        this.camera.getWorldDirection(cameraDirection);
+
+        // Check all labels (species labels + geographic labels)
+        const allLabels = [...this.labels, ...this.geoLabels.map(g => g.label)];
+
+        allLabels.forEach(label => {
+            // Get label world position
+            const labelWorldPos = new THREE.Vector3();
+            label.getWorldPosition(labelWorldPos);
+
+            // Calculate direction from camera to label
+            const labelDirection = labelWorldPos.clone().sub(this.camera.position).normalize();
+
+            // Calculate dot product (if negative, label is behind camera)
+            const dot = labelDirection.dot(cameraDirection);
+
+            // Also check if label is on the visible hemisphere of the globe
+            // by checking if it's facing the camera
+            const labelNormal = labelWorldPos.clone().normalize();
+            const dotWithCamera = labelNormal.dot(cameraDirection.clone().negate());
+
+            // Show label only if it's in front of camera and on visible side of globe
+            if (dot > 0 && dotWithCamera > -0.1) {
+                label.element.style.opacity = '1';
+                label.element.style.pointerEvents = 'auto';
+            } else {
+                label.element.style.opacity = '0';
+                label.element.style.pointerEvents = 'none';
+            }
+        });
     }
 }

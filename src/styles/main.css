@@ -515,6 +515,17 @@ body {
     transition: all 0.2s;
 }
 
+#continent-filter {
+    cursor: pointer;
+}
+
+#continent-filter option {
+    background: rgba(26, 26, 46, 0.95);
+    color: white;
+    padding: 10px;
+    font-size: 0.9rem;
+}
+
 #continent-filter:focus,
 #species-search:focus {
     outline: none;
