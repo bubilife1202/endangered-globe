@@ -50,6 +50,10 @@ export const translations = {
         location: '위치',
         year: '년도',
         closeButton: '닫기',
+        learnMore: '더 알아보기',
+        linkWikipedia: '위키피디아',
+        linkNews: '뉴스 검색',
+        linkIUCN: 'IUCN 정보',
 
         // Legend
         legendTitle: '범례',
@@ -120,6 +124,10 @@ export const translations = {
         location: 'Location',
         year: 'Year',
         closeButton: 'Close',
+        learnMore: 'Learn More',
+        linkWikipedia: 'Wikipedia',
+        linkNews: 'News Search',
+        linkIUCN: 'IUCN Info',
 
         // Legend
         legendTitle: 'Legend',

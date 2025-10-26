@@ -154,6 +154,12 @@ export class UIController {
             option.textContent = i18n.t(`continents.${continentKey}`);
         });
 
+        // Update info panel link labels
+        document.querySelector('.info-links h3').textContent = '🔗 ' + i18n.t('learnMore');
+        document.querySelector('#link-wikipedia span:last-child').textContent = i18n.t('linkWikipedia');
+        document.querySelector('#link-news span:last-child').textContent = i18n.t('linkNews');
+        document.querySelector('#link-iucn span:last-child').textContent = i18n.t('linkIUCN');
+
         // Update close button aria-label
         this.closeBtn.setAttribute('aria-label', i18n.t('closeButton'));
     }
@@ -272,8 +278,30 @@ export class UIController {
         const population = currentLang === 'ko' ? species.population : species.populationEn;
         document.getElementById('population').textContent = population;
 
+        // Update external links
+        this.updateExternalLinks(species, currentLang);
+
         // Show panel
         this.infoPanel.classList.remove('hidden');
+    }
+
+    updateExternalLinks(species, lang) {
+        // Wikipedia link (using scientific name)
+        const wikiLang = lang === 'ko' ? 'ko' : 'en';
+        const wikiSearchTerm = encodeURIComponent(species.name);
+        const wikiUrl = `https://${wikiLang}.wikipedia.org/wiki/${wikiSearchTerm}`;
+        document.getElementById('link-wikipedia').href = wikiUrl;
+
+        // News search link (using common name)
+        const searchName = lang === 'ko' ? species.commonNameKo : species.commonName;
+        const newsSearchTerm = encodeURIComponent(searchName + ' endangered');
+        const newsUrl = `https://www.google.com/search?q=${newsSearchTerm}&tbm=nws`;
+        document.getElementById('link-news').href = newsUrl;
+
+        // IUCN Red List link (using scientific name)
+        const iucnSearchTerm = encodeURIComponent(species.name);
+        const iucnUrl = `https://www.iucnredlist.org/search?query=${iucnSearchTerm}&searchType=species`;
+        document.getElementById('link-iucn').href = iucnUrl;
     }
 
     hideInfoPanel() {
