@@ -3,13 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <!-- PWA Meta Tags -->
     <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Red List Globe">
     <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#1a1a2e">
+    <meta name="description" content="Interactive 3D visualization of endangered species across the globe. Explore IUCN Red List data and future scenarios.">
+
+    <!-- Manifest -->
+    <link rel="manifest" href="/manifest.json">
+
+    <!-- Apple Touch Icons -->
+    <link rel="apple-touch-icon" sizes="72x72" href="/icons/icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="96x96" href="/icons/icon-96x96.png">
+    <link rel="apple-touch-icon" sizes="128x128" href="/icons/icon-128x128.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="/icons/icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="/icons/icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="192x192" href="/icons/icon-192x192.png">
+    <link rel="apple-touch-icon" sizes="384x384" href="/icons/icon-384x384.png">
+    <link rel="apple-touch-icon" sizes="512x512" href="/icons/icon-512x512.png">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="32x32" href="/icons/icon-72x72.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/icons/icon-72x72.png">
+
     <title>The Living Red List Globe - 살아있는 멸종위기 지도</title>
     <link rel="stylesheet" href="/src/styles/main.css">
 </head>
 <body>
-    <div id="app">
+    <!-- Skip to main content link for accessibility -->
+    <a href="#globe-container" class="skip-link">Skip to main content</a>
+
+    <div id="app" role="application" aria-label="The Living Red List Globe Application">
         <!-- Mobile Menu Toggle -->
         <button class="menu-toggle" id="menu-toggle" aria-label="메뉴 열기">
             <span></span>
@@ -143,6 +170,46 @@
             </div>
         </div>
 
+        <!-- Simulation Panel -->
+        <div class="simulation-panel hidden" id="simulation-panel">
+            <button class="simulation-toggle" id="simulation-toggle" aria-label="시뮬레이션">
+                🔬 <span id="simulation-toggle-text">시뮬레이션</span>
+            </button>
+
+            <div class="simulation-content hidden" id="simulation-content">
+                <h3 id="simulation-title">시뮬레이션 모드</h3>
+                <p class="simulation-desc" id="simulation-desc">미래 시나리오를 탐험해보세요</p>
+
+                <div class="simulation-scenarios" id="simulation-scenarios">
+                    <!-- Scenarios will be added dynamically -->
+                </div>
+
+                <div class="simulation-stats hidden" id="simulation-stats">
+                    <h4 id="stats-title">시뮬레이션 결과</h4>
+                    <div class="stat-item">
+                        <span class="stat-label" id="stat-improved-label">상태 개선</span>
+                        <span class="stat-value" id="stat-improved">0종</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label" id="stat-worsened-label">상태 악화</span>
+                        <span class="stat-value" id="stat-worsened">0종</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label" id="stat-population-label">평균 개체수 변화</span>
+                        <span class="stat-value" id="stat-population">0%</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label" id="stat-timeline-label">예상 기간</span>
+                        <span class="stat-value" id="stat-timeline">0년</span>
+                    </div>
+                </div>
+
+                <button class="simulation-reset hidden" id="simulation-reset">
+                    <span id="reset-button-text">시뮬레이션 종료</span>
+                </button>
+            </div>
+        </div>
+
         <!-- Timeline Controls (Simplified for mobile) -->
         <div class="timeline-controls">
             <div class="timeline-header">
@@ -197,6 +264,20 @@
         <div id="loading" class="loading">
             <div class="spinner"></div>
             <p>데이터를 불러오는 중...</p>
+        </div>
+
+        <!-- PWA Install Prompt -->
+        <div class="pwa-install-prompt hidden" id="pwa-install-prompt">
+            <div class="pwa-prompt-content">
+                <button class="pwa-prompt-close" id="pwa-prompt-close" aria-label="닫기">&times;</button>
+                <div class="pwa-prompt-icon">🌍</div>
+                <h3 id="pwa-prompt-title">앱으로 설치하기</h3>
+                <p id="pwa-prompt-desc">홈 화면에 추가하고 오프라인에서도 사용하세요</p>
+                <div class="pwa-prompt-buttons">
+                    <button class="pwa-install-btn" id="pwa-install-btn">설치</button>
+                    <button class="pwa-later-btn" id="pwa-later-btn">나중에</button>
+                </div>
+            </div>
         </div>
     </div>
 

@@ -1,4 +1,5 @@
 import { i18n } from './i18n.js';
+import { simulationEngine } from './simulation.js';
 
 // UI Controller
 export class UIController {
@@ -26,6 +27,14 @@ export class UIController {
         this.labelVisibilityToggle = document.getElementById('label-visibility-toggle');
         this.labelsVisible = localStorage.getItem('labelsVisible') !== 'false'; // Default to true
 
+        // Simulation panel
+        this.simulationPanel = document.getElementById('simulation-panel');
+        this.simulationToggle = document.getElementById('simulation-toggle');
+        this.simulationContent = document.getElementById('simulation-content');
+        this.simulationScenarios = document.getElementById('simulation-scenarios');
+        this.simulationStats = document.getElementById('simulation-stats');
+        this.simulationReset = document.getElementById('simulation-reset');
+
         this.statusFilters = [];
         this.continentFilter = document.getElementById('continent-filter');
         this.searchInput = document.getElementById('species-search');
@@ -35,11 +44,14 @@ export class UIController {
         this.onSearch = null;
         this.onLanguageChange = null;
         this.onLabelVisibilityChange = null;
+        this.onSimulationStart = null;
+        this.onSimulationStop = null;
 
         this.initializeEventListeners();
         this.initializeMobileControls();
         this.initializeLanguageToggle();
         this.initializeSettingsPanel();
+        this.initializeSimulationPanel();
         this.updateStatusFilters(); // Initialize status filters
 
         // Subscribe to language changes
@@ -175,6 +187,109 @@ export class UIController {
         return this.labelsVisible;
     }
 
+    initializeSimulationPanel() {
+        // Make simulation panel visible
+        if (this.simulationPanel) {
+            this.simulationPanel.classList.remove('hidden');
+        }
+
+        // Simulation toggle button
+        if (this.simulationToggle) {
+            this.simulationToggle.addEventListener('click', (e) => {
+                e.stopPropagation();
+                this.simulationContent.classList.toggle('hidden');
+            });
+        }
+
+        // Close simulation when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!this.simulationContent.classList.contains('hidden') &&
+                !this.simulationContent.contains(e.target) &&
+                !this.simulationToggle.contains(e.target)) {
+                this.simulationContent.classList.add('hidden');
+            }
+        });
+
+        // Render scenario cards
+        this.renderSimulationScenarios();
+
+        // Reset button
+        if (this.simulationReset) {
+            this.simulationReset.addEventListener('click', () => {
+                if (this.onSimulationStop) {
+                    this.onSimulationStop();
+                }
+                this.simulationReset.classList.add('hidden');
+                this.simulationStats.classList.add('hidden');
+                // Remove active state from all scenarios
+                const cards = this.simulationScenarios.querySelectorAll('.scenario-card');
+                cards.forEach(card => card.classList.remove('active'));
+            });
+        }
+    }
+
+    renderSimulationScenarios() {
+        const scenarios = simulationEngine.getScenarios();
+        const lang = i18n.getLanguage();
+
+        this.simulationScenarios.innerHTML = scenarios.map(scenario => `
+            <div class="scenario-card" data-scenario-id="${scenario.id}">
+                <div class="scenario-header">
+                    <span class="scenario-icon">${scenario.icon}</span>
+                    <span class="scenario-name">${lang === 'ko' ? scenario.nameKo : scenario.nameEn}</span>
+                </div>
+                <div class="scenario-description">${lang === 'ko' ? scenario.descKo : scenario.descEn}</div>
+            </div>
+        `).join('');
+
+        // Add click handlers to scenario cards
+        const cards = this.simulationScenarios.querySelectorAll('.scenario-card');
+        cards.forEach(card => {
+            card.addEventListener('click', () => {
+                const scenarioId = card.dataset.scenarioId;
+                this.startSimulation(scenarioId);
+
+                // Update active state
+                cards.forEach(c => c.classList.remove('active'));
+                card.classList.add('active');
+            });
+        });
+    }
+
+    startSimulation(scenarioId) {
+        if (this.onSimulationStart) {
+            this.onSimulationStart(scenarioId);
+        }
+
+        // Show stats and reset button
+        this.simulationStats.classList.remove('hidden');
+        this.simulationReset.classList.remove('hidden');
+    }
+
+    updateSimulationStats(stats) {
+        if (!stats) return;
+
+        const lang = i18n.getLanguage();
+
+        // Update stat values
+        document.getElementById('stat-improved').textContent =
+            lang === 'ko' ? `${stats.statusChanges.improved}종` : `${stats.statusChanges.improved} species`;
+
+        document.getElementById('stat-worsened').textContent =
+            lang === 'ko' ? `${stats.statusChanges.worsened}종` : `${stats.statusChanges.worsened} species`;
+
+        const popChange = document.getElementById('stat-population');
+        popChange.textContent = `${stats.avgPopChange > 0 ? '+' : ''}${stats.avgPopChange}%`;
+        if (stats.avgPopChange < 0) {
+            popChange.classList.add('negative');
+        } else {
+            popChange.classList.remove('negative');
+        }
+
+        document.getElementById('stat-timeline').textContent =
+            lang === 'ko' ? `${stats.timeline}년` : `${stats.timeline} years`;
+    }
+
     updateUILanguage() {
         // Update header
         document.querySelector('.subtitle').textContent = i18n.t('subtitle');
@@ -234,6 +349,47 @@ export class UIController {
         if (labelVisibilityLabel) {
             labelVisibilityLabel.textContent = i18n.t('labelVisibility');
         }
+
+        // Update simulation panel
+        const simulationToggleText = document.getElementById('simulation-toggle-text');
+        if (simulationToggleText) {
+            simulationToggleText.textContent = i18n.t('simulationToggle');
+        }
+        const simulationTitle = document.getElementById('simulation-title');
+        if (simulationTitle) {
+            simulationTitle.textContent = i18n.t('simulationTitle');
+        }
+        const simulationDesc = document.getElementById('simulation-desc');
+        if (simulationDesc) {
+            simulationDesc.textContent = i18n.t('simulationDesc');
+        }
+        const resetButtonText = document.getElementById('reset-button-text');
+        if (resetButtonText) {
+            resetButtonText.textContent = i18n.t('simulationReset');
+        }
+        const statsTitle = document.getElementById('stats-title');
+        if (statsTitle) {
+            statsTitle.textContent = i18n.t('statsTitle');
+        }
+        const statImprovedLabel = document.getElementById('stat-improved-label');
+        if (statImprovedLabel) {
+            statImprovedLabel.textContent = i18n.t('statImproved');
+        }
+        const statWorsenedLabel = document.getElementById('stat-worsened-label');
+        if (statWorsenedLabel) {
+            statWorsenedLabel.textContent = i18n.t('statWorsened');
+        }
+        const statPopulationLabel = document.getElementById('stat-population-label');
+        if (statPopulationLabel) {
+            statPopulationLabel.textContent = i18n.t('statPopulation');
+        }
+        const statTimelineLabel = document.getElementById('stat-timeline-label');
+        if (statTimelineLabel) {
+            statTimelineLabel.textContent = i18n.t('statTimeline');
+        }
+
+        // Re-render simulation scenarios with updated language
+        this.renderSimulationScenarios();
 
         // Update close button aria-label
         this.closeBtn.setAttribute('aria-label', i18n.t('closeButton'));

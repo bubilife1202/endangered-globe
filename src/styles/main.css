@@ -729,6 +729,283 @@ body {
     transform: translateX(24px);
 }
 
+/* Simulation Panel */
+.simulation-panel {
+    position: fixed;
+    bottom: 180px;
+    right: 30px;
+    z-index: 100;
+}
+
+.simulation-toggle {
+    background: rgba(139, 69, 19, 0.9);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 25px;
+    padding: 12px 20px;
+    color: white;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.simulation-toggle:hover {
+    background: rgba(160, 82, 45, 0.95);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+}
+
+.simulation-content {
+    position: absolute;
+    bottom: 60px;
+    right: 0;
+    width: 320px;
+    max-height: 500px;
+    background: rgba(0, 0, 0, 0.95);
+    border-radius: 15px;
+    padding: 20px;
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    overflow-y: auto;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.simulation-content.hidden {
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(10px);
+}
+
+.simulation-content h3 {
+    font-size: 1.2rem;
+    margin-bottom: 8px;
+    color: #fff;
+}
+
+.simulation-desc {
+    font-size: 0.85rem;
+    opacity: 0.7;
+    margin-bottom: 20px;
+}
+
+.simulation-scenarios {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.scenario-card {
+    background: rgba(255, 255, 255, 0.05);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 15px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.scenario-card:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.3);
+    transform: translateX(5px);
+}
+
+.scenario-card.active {
+    background: rgba(76, 175, 80, 0.2);
+    border-color: rgba(76, 175, 80, 0.5);
+}
+
+.scenario-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+}
+
+.scenario-icon {
+    font-size: 1.5rem;
+}
+
+.scenario-name {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #fff;
+}
+
+.scenario-description {
+    font-size: 0.85rem;
+    opacity: 0.8;
+    line-height: 1.4;
+}
+
+.simulation-stats {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 15px;
+}
+
+.simulation-stats h4 {
+    font-size: 1rem;
+    margin-bottom: 12px;
+    color: #4CAF50;
+}
+
+.stat-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.stat-item:last-child {
+    border-bottom: none;
+}
+
+.stat-label {
+    font-size: 0.85rem;
+    opacity: 0.8;
+}
+
+.stat-value {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #4CAF50;
+}
+
+.stat-value.negative {
+    color: #FF6F00;
+}
+
+.simulation-reset {
+    width: 100%;
+    background: rgba(211, 47, 47, 0.2);
+    border: 1px solid rgba(211, 47, 47, 0.5);
+    border-radius: 8px;
+    padding: 12px;
+    color: white;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.simulation-reset:hover {
+    background: rgba(211, 47, 47, 0.3);
+    border-color: rgba(211, 47, 47, 0.7);
+}
+
+/* PWA Install Prompt */
+.pwa-install-prompt {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 500;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.95), rgba(0, 0, 0, 0.85));
+    backdrop-filter: blur(20px);
+    padding: 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.5);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.pwa-install-prompt.hidden {
+    transform: translateY(100%);
+}
+
+.pwa-prompt-content {
+    max-width: 600px;
+    margin: 0 auto;
+    position: relative;
+    text-align: center;
+}
+
+.pwa-prompt-close {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    border-radius: 50%;
+    color: white;
+    font-size: 1.5rem;
+    width: 32px;
+    height: 32px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+
+.pwa-prompt-close:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: rotate(90deg);
+}
+
+.pwa-prompt-icon {
+    font-size: 3rem;
+    margin-bottom: 10px;
+}
+
+.pwa-prompt-content h3 {
+    font-size: 1.3rem;
+    margin-bottom: 8px;
+    color: #fff;
+}
+
+.pwa-prompt-content p {
+    font-size: 0.95rem;
+    opacity: 0.8;
+    margin-bottom: 20px;
+}
+
+.pwa-prompt-buttons {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+}
+
+.pwa-install-btn,
+.pwa-later-btn {
+    padding: 12px 30px;
+    border-radius: 25px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: none;
+}
+
+.pwa-install-btn {
+    background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+    color: white;
+    box-shadow: 0 4px 15px rgba(76, 175, 80, 0.4);
+}
+
+.pwa-install-btn:hover {
+    background: linear-gradient(135deg, #45a049 0%, #3d8b40 100%);
+    box-shadow: 0 6px 20px rgba(76, 175, 80, 0.6);
+    transform: translateY(-2px);
+}
+
+.pwa-later-btn {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.pwa-later-btn:hover {
+    background: rgba(255, 255, 255, 0.15);
+}
+
 /* Loading */
 .loading {
     position: absolute;
@@ -759,6 +1036,73 @@ body {
 @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
+}
+
+/* Accessibility - Focus Indicators */
+*:focus {
+    outline: 2px solid #4CAF50;
+    outline-offset: 2px;
+}
+
+*:focus:not(:focus-visible) {
+    outline: none;
+}
+
+*:focus-visible {
+    outline: 2px solid #4CAF50;
+    outline-offset: 2px;
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible {
+    outline: 2px solid #4CAF50;
+    outline-offset: 2px;
+    box-shadow: 0 0 0 4px rgba(76, 175, 80, 0.2);
+}
+
+/* Skip to main content link (for screen readers) */
+.skip-link {
+    position: absolute;
+    top: -40px;
+    left: 0;
+    background: #4CAF50;
+    color: white;
+    padding: 8px 16px;
+    text-decoration: none;
+    z-index: 1000;
+    border-radius: 0 0 4px 0;
+}
+
+.skip-link:focus {
+    top: 0;
+}
+
+/* Reduced motion for accessibility */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    * {
+        border-color: currentColor !important;
+    }
+
+    .species-label,
+    .legend,
+    .filter-panel,
+    .info-panel {
+        border-width: 2px !important;
+    }
 }
 
 /* Scrollbar */
@@ -1085,6 +1429,59 @@ body {
 
     .toggle-switch.active .toggle-switch-slider {
         transform: translateX(21px);
+    }
+
+    /* Simulation Panel - Mobile */
+    .simulation-panel {
+        bottom: 120px;
+        right: 10px;
+    }
+
+    .simulation-toggle {
+        padding: 10px 16px;
+        font-size: 0.85rem;
+    }
+
+    .simulation-content {
+        width: calc(100vw - 20px);
+        max-width: 300px;
+        bottom: 55px;
+        right: 0;
+        max-height: 400px;
+        padding: 15px;
+    }
+
+    .simulation-content h3 {
+        font-size: 1.05rem;
+    }
+
+    .scenario-card {
+        padding: 12px;
+    }
+
+    .scenario-icon {
+        font-size: 1.3rem;
+    }
+
+    .scenario-name {
+        font-size: 0.9rem;
+    }
+
+    .scenario-description {
+        font-size: 0.8rem;
+    }
+
+    .simulation-stats {
+        padding: 12px;
+    }
+
+    .stat-item {
+        padding: 6px 0;
+    }
+
+    .stat-label,
+    .stat-value {
+        font-size: 0.8rem;
     }
 
     /* Info Panel - Bottom Sheet Style */

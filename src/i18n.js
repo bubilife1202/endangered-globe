@@ -78,6 +78,23 @@ export const translations = {
         settingsTitle: '설정',
         labelVisibility: '동물 이름 표시',
 
+        // Simulation
+        simulationToggle: '시뮬레이션',
+        simulationTitle: '시뮬레이션 모드',
+        simulationDesc: '미래 시나리오를 탐험해보세요',
+        simulationReset: '시뮬레이션 종료',
+        statsTitle: '시뮬레이션 결과',
+        statImproved: '상태 개선',
+        statWorsened: '상태 악화',
+        statPopulation: '평균 개체수 변화',
+        statTimeline: '예상 기간',
+
+        // PWA
+        pwaPromptTitle: '앱으로 설치하기',
+        pwaPromptDesc: '홈 화면에 추가하고 오프라인에서도 사용하세요',
+        pwaInstallBtn: '설치',
+        pwaLaterBtn: '나중에',
+
         // Loading
         loading: '데이터 불러오는 중...'
     },
@@ -158,6 +175,23 @@ export const translations = {
         // Settings
         settingsTitle: 'Settings',
         labelVisibility: 'Show Species Labels',
+
+        // Simulation
+        simulationToggle: 'Simulation',
+        simulationTitle: 'Simulation Mode',
+        simulationDesc: 'Explore future scenarios',
+        simulationReset: 'End Simulation',
+        statsTitle: 'Simulation Results',
+        statImproved: 'Status Improved',
+        statWorsened: 'Status Worsened',
+        statPopulation: 'Avg. Population Change',
+        statTimeline: 'Timeframe',
+
+        // PWA
+        pwaPromptTitle: 'Install as App',
+        pwaPromptDesc: 'Add to home screen and use offline',
+        pwaInstallBtn: 'Install',
+        pwaLaterBtn: 'Later',
 
         // Loading
         loading: 'Loading data...'
